@@ -5,8 +5,9 @@ const MONSTERS = [
         level: 1,
         hp: 30,
         hpMax: 30,
-        damage: 2,
-        delayAttack: 1
+        damage: 1,
+        delayAttack: 0.3,
+        speed: 3
     },
     {
         name: 'Escorpião',
@@ -15,7 +16,8 @@ const MONSTERS = [
         hp: 45,
         hpMax: 45,
         damage: 4,
-        delayAttack: .8
+        delayAttack: .8,
+        speed: 2
     },
     {
         name: 'Cobra',
@@ -24,7 +26,8 @@ const MONSTERS = [
         hp: 60,
         hpMax: 60,
         damage: 10,
-        delayAttack: 1.2
+        delayAttack: 1.2,
+        speed: 3
     },
     {
         name: 'Bruxão',
@@ -33,6 +36,7 @@ const MONSTERS = [
         hp: 1000,
         hpMax: 1000,
         damage: 25,
-        delayAttack: 2
+        delayAttack: 2,
+        speed: 4
     }
 ]
