@@ -1,0 +1,55 @@
+* {
+    box-sizing: border-box;
+    user-select: none;
+}
+html, body { margin: 0; padding: 0; height: 100%;}
+body {
+    font-family: "Roboto", sans-serif;
+}
+.flex {
+    display: flex;
+}
+.flex-between {
+    justify-content: space-between;
+}
+
+.ui-card {
+    border: 2px solid #000000;
+    background-color: #f5f5f5;
+    padding: 1rem;
+    border-radius: 10px;
+}
+.mb {
+    margin-bottom: .5rem;
+}
+.mb-2 {
+    margin-top: 1rem;
+}
+
+/* Base Game/UI */
+.game-container {
+    position: fixed;
+    background-image: url('../img/background.png');
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+.game-container {
+    background-color: #000;
+    z-index: 1;
+}
+.ui-container-header {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    z-index: 2;
+}
+.ui-container-footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: 2;
+}

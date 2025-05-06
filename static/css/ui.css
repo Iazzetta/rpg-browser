@@ -1,0 +1,105 @@
+/* Generic UI */
+.stats-bar {
+    width: 100%;
+    height: 25px;
+    margin-bottom: 5px;
+    border: 1px solid #000000;
+    padding: 2px;
+    border-radius: 5px;
+}
+
+.stats-bar.hp {
+    background-color: #fff;
+}
+.stats-bar-fill.hp {
+    background-color: #f44336;
+    transition: width 0.3s ease-in-out;
+}
+
+.stats-bar.mana {
+    background-color: #2196f3;
+}
+
+.stats-bar.exp {
+    background-color: #ffeb3b;
+}
+.slot {
+    width: 100%;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin: 5px;
+    padding: 5px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    height: 50px;
+    font-size: 2rem;
+    cursor: pointer;
+}
+.slot:hover {
+    border-color: #2196f3;
+    background-color: #2196f33b;
+}
+.ui-card.itens-shortcut-panel, .ui-card.menu-panel {
+    padding: 0;
+}
+
+/* User Panel */
+.user-panel {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    width: 200px;
+}
+
+/* Enemy Panel */
+.enemy-panel {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    width: 200px;
+}
+
+/* Chat Panel */
+.chat-panel {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    width: 400px;
+}
+
+.chat-panel .chat-messages {
+    height: 100px;
+    overflow-y: auto;
+    margin: 1rem 0;
+}
+
+.chat-panel .message {
+    font-size: 13px;
+}
+.chat-panel .message .username {
+    font-weight: bold;
+}
+.chat-panel input {
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid black;
+    padding: 5px;
+}
+    
+
+/* Itens Shortcut Panel */
+.itens-shortcut-panel {
+    position: fixed;
+    bottom: 20px;
+    right: calc(50% - 200px);
+    width: 400px;
+}
+
+/* Menu Panel */
+.menu-panel {
+    position: fixed;
+    bottom: 20px;
+    right: 10px;
+    width: 400px;
+}

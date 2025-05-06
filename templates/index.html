@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPG</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/game.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/ui.css') }}">
+</head>
+<body>
+
+    <div class="ui-container-header">
+
+        <!-- User Panel -->
+        {% include 'ui/user_panel.html' %}
+
+        <!-- Selected Enemy -->
+        {% include 'ui/enemy_panel.html' %}
+        
+    </div>
+
+    <div class="game-container">
+        {% include 'game/game.html' %}
+    </div>
+
+    <div class="ui-container-footer">
+         <!-- Chat -->
+         {% include 'ui/chat.html' %}
+
+         <!-- Itens Shortcut -->
+         {% include 'ui/itens_shortcut.html' %}
+ 
+         <!-- Menu (inventario, market, map, etc) -->
+         {% include 'ui/menu.html' %}
+    </div>
+    
+    <script src="{{ url_for('static', path='js/player.js') }}"></script>
+    <script src="{{ url_for('static', path='js/enemy.js') }}"></script>
+    <script src="{{ url_for('static', path='js/monsters.js') }}"></script>
+    <script src="{{ url_for('static', path='js/utils.js') }}"></script>
+    <script src="{{ url_for('static', path='js/game.js') }}"></script>
+    <script src="{{ url_for('static', path='js/events.js') }}"></script>
+</body>
+</html>
