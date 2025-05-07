@@ -10,13 +10,13 @@
 .entity {
     position: fixed;
     bottom: 225px;
-    font-size: 200px;
     z-index: 10;
+    font-size: 200px;
 }
 
 .player {
     left: 300px;
-    transform: scaleX(-1);
+    /* transform: scaleX(-1); */
     z-index: 5;
 }   
 
