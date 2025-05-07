@@ -1,4 +1,4 @@
-window.player = new Player('Guilherme', 1, 100, 100, 100, 100, 0, 100, 10, 1, 6);
+window.player = new Player('Guilherme', 1, 100, 100, 100, 100, 0, 100, 10, .5, 6);
 window.enemy = getCurrentMonster();
 
 const gameLoop = () => {

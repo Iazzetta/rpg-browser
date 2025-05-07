@@ -1,4 +1,9 @@
+
+const FLOOR = 210;
+const ENTITY_SCALE = 2;
+
 let currentMonster = 0;
+
 const getCurrentMonster = () => {
     const monster = MONSTERS[currentMonster];
     return new Enemy(
@@ -9,7 +14,8 @@ const getCurrentMonster = () => {
         monster.hpMax,
         monster.damage,
         monster.delayAttack,
-        monster.speed
+        monster.speed,
+        monster.floor
     );
 }
 

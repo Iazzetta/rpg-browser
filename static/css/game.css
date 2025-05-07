@@ -12,6 +12,7 @@
     bottom: 225px;
     z-index: 10;
     font-size: 200px;
+    transform: scale(2);
 }
 
 .player {
@@ -23,18 +24,5 @@
 .enemy {
     right: 300px;
     cursor: pointer;
-    animation: move-enemy 2s linear infinite;
     z-index: 4;
-}
-
-@keyframes move-enemy {
-    0% {
-        bottom: 225px;
-    }
-    50% {
-        bottom: 240px;
-    }
-    100% {
-        bottom: 225px;
-    }
 }
