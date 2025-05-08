@@ -1,20 +1,21 @@
 class Enemy {
-    constructor(name, level, icon, hp, hpMax, damage, delayAttack, speed, floor) {
-        this.name = name;
-        this.level = level;
-        this.icon = icon;
-        this.hp = hp;
-        this.hpMax = hpMax;
-        this.damage = damage;
-        this.delayAttack = delayAttack;
-        this.botInterval = null;
+    constructor(data) {
+        this.name = data.name;
+        this.level = data.level;
+        this.hp = data.hp;
+        this.hpMax = data.hpMax;
+        this.damage = data.damage;
+        this.delayAttack = data.delayAttack;
+        this.x = window.innerWidth - 300;
+        this.y = data.floor;
+        this.speed = data.speed;
+
         this.width = 200;
         this.height = 200;
-        this.x = window.innerWidth - 100 - this.width;
-        this.y = floor;
-        this.speed = speed;
+
         this.isAttacking = false;
         this.element = document.querySelector('.enemy')
+        this.botInterval = null;
 
         this.spriteManager = new SpriteManager(this.element, {
             idle: {

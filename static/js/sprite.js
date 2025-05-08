@@ -33,6 +33,6 @@ class SpriteManager {
         }
         const frameX = selectedFrame.frame * selectedFrame.width;
         this.element.style.backgroundImage = `url(${selectedFrame.src})`
-        this.element.style.backgroundPosition = `${frameX}px ${selectedFrame.height}px`
+        this.element.style.backgroundPosition = `${-frameX}px ${selectedFrame.height}px`
     }
 }

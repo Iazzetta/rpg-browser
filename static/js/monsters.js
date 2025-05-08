@@ -1,7 +1,6 @@
 const MONSTERS = [
     {
-        name: 'Formiga',
-        icon: '🐜',
+        name: 'Verme de Fogo',
         level: 1,
         hp: 30,
         hpMax: 30,
@@ -10,37 +9,4 @@ const MONSTERS = [
         speed: 3,
         floor: 230
     },
-    {
-        name: 'Escorpião',
-        icon: '🦂',
-        level: 2,
-        hp: 45,
-        hpMax: 45,
-        damage: 4,
-        delayAttack: .8,
-        speed: 2,
-        floor: 230
-    },
-    {
-        name: 'Cobra',
-        icon: '🐍',
-        level: 5,
-        hp: 60,
-        hpMax: 60,
-        damage: 10,
-        delayAttack: 1.2,
-        speed: 3,
-        floor: 230
-    },
-    {
-        name: 'Bruxão',
-        icon: '🧌',
-        level: 8,
-        hp: 1000,
-        hpMax: 1000,
-        damage: 25,
-        delayAttack: 2,
-        speed: 4,
-        floor: 230
-    }
 ]

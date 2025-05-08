@@ -6,17 +6,7 @@ let currentMonster = 0;
 
 const getCurrentMonster = () => {
     const monster = MONSTERS[currentMonster];
-    return new Enemy(
-        monster.name,
-        monster.level,
-        monster.icon,
-        monster.hp,
-        monster.hpMax,
-        monster.damage,
-        monster.delayAttack,
-        monster.speed,
-        monster.floor
-    );
+    return new Enemy(monster);
 }
 
 function calculateDistance(x1, y1, x2, y2) {

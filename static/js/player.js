@@ -1,21 +1,22 @@
 class Player {
-    constructor(name, level, hp, hpMax, mana, manaMax, exp, expMax, damage, delayAttack, speed) {
-        this.name = name;
-        this.level = level;
-        this.hp = hp;
-        this.hpMax = hpMax;
-        this.mana = mana;
-        this.manaMax = manaMax;
-        this.exp = exp;
-        this.expMax = expMax;
-        this.damage = damage;
-        this.delayAttack = delayAttack;
+    constructor(data) {
+        this.name = data.name;
+        this.level = data.level;
+        this.hp = data.hp;
+        this.hpMax = data.hpMax;
+        this.mana = data.mana;
+        this.manaMax = data.manaMax;
+        this.exp = data.exp;
+        this.expMax = data.expMax;
+        this.damage = data.damage;
+        this.delayAttack = data.delayAttack;
+        this.step = data.step;
+
         this.isAttacking = false;
         this.x = 300;
         this.y = FLOOR;
         this.width = 162;
         this.height = 162;
-        this.step = speed;
         
         this.keyboard = {left: false, right: false, jump: false}
         
@@ -24,6 +25,8 @@ class Player {
         this.gravityForce = 15
         this.jumpFall = false;
         this.element = document.querySelector('.player')
+
+        this.attackCount = 1;
 
         // load sprites
         this.spriteManager = new SpriteManager(this.element, {
@@ -42,7 +45,21 @@ class Player {
                 height: 162
             },
             attack1: {
+                src: '/static/img/sprites/warrior/attack1.png',
+                frame: 1,
+                frames: 7,
+                width: 162,
+                height: 162
+            },
+            attack2: {
                 src: '/static/img/sprites/warrior/attack2.png',
+                frame: 1,
+                frames: 7,
+                width: 162,
+                height: 162
+            },
+            attack3: {
+                src: '/static/img/sprites/warrior/attack3.png',
                 frame: 1,
                 frames: 7,
                 width: 162,
@@ -62,11 +79,17 @@ class Player {
 
     movement() {
 
-        if (this.keyboard.left) {
-            this.x -= this.step
-        }
-        if (this.keyboard.right) {
-            this.x += this.step
+        if (this.keyboard.left || this.keyboard.right) {
+            if (!this.isAttacking) {
+                this.spriteManager.setState('run')
+
+                if (this.keyboard.left) {
+                    this.x -= this.step
+                }
+                if (this.keyboard.right) {
+                    this.x += this.step
+                }
+            }
         }
 
         if (this.keyboard.jump) {
@@ -106,7 +129,7 @@ class Player {
     attack(entity) {
         if (this.isAttacking) return;
         this.isAttacking = true;
-        this.spriteManager.setState('attack1')
+        this.spriteManager.setState(`attack${this.attackCount}`)
         if (calculateDistance(this.x, this.y, entity.x, entity.y) <=  entity.width) {
             entity.hp -= this.damage;
         }
@@ -115,6 +138,11 @@ class Player {
         setTimeout(() => {
             this.isAttacking = false;
             this.spriteManager.setState('idle')
+            if (this.attackCount >= 3) {
+                this.attackCount = 1;
+            } else {
+                this.attackCount++;
+            }
         }, this.delayAttack * 1000);
     }
 
@@ -127,9 +155,11 @@ class Player {
         document.querySelector('.user-panel .stats-bar-fill.hp').style.width = `${this.hp / this.hpMax * 100}%`;
         document.querySelector('.user-panel .stats-bar-fill.hp').innerText = `${this.hp}/${this.hpMax}`;
         // mana
-        document.querySelector('.user-panel .stats-bar.mana').innerText = `${this.mana}/${this.manaMax}`;
+        document.querySelector('.user-panel .stats-bar-fill.mana').style.width = `${this.mana / this.manaMax * 100}%`;
+        document.querySelector('.user-panel .stats-bar-fill.mana').innerText = `${this.mana}/${this.manaMax}`;
         // exp
-        document.querySelector('.user-panel .stats-bar.exp').innerText = `${this.exp}/${this.expMax}`;
+        document.querySelector('.user-panel .stats-bar-fill.exp').style.width = `${this.exp / this.expMax * 100}%`;
+        document.querySelector('.user-panel .stats-bar-fill.exp').innerText = `${this.exp}/${this.expMax}`;
 
         // player position
         document.querySelector('.player').style.left = `${this.x}px`;
@@ -158,12 +188,10 @@ class Player {
             if (key === 'a') {
                 this.keyboard.left = true;
                 this.element.style.transform = `scale(-${ENTITY_SCALE}, ${ENTITY_SCALE})`;
-                this.spriteManager.setState('run')
             }
             if (key === 'd') {
                 this.keyboard.right = true;
                 this.element.style.transform = `scale(${ENTITY_SCALE}, ${ENTITY_SCALE})`;
-                this.spriteManager.setState('run')
             }
             if (key === ' ') {
                 this.keyboard.jump = true;

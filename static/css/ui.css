@@ -1,26 +1,29 @@
 /* Generic UI */
 .stats-bar {
     width: 100%;
-    height: 25px;
     margin-bottom: 5px;
-    border: 1px solid #000000;
+    border: 2px solid #000000;
+    border-radius: 10px;
+}
+.stats-bar-fill {
+    border-radius: 8px;
     padding: 2px;
-    border-radius: 5px;
-}
-
-.stats-bar.hp {
-    background-color: #fff;
-}
-.stats-bar-fill.hp {
-    background-color: #f44336;
     transition: width 0.3s ease-in-out;
 }
 
-.stats-bar.mana {
+.stats-bar.hp, .stats-bar.mana, .stats-bar.exp {
+    background-color: #fff;
+}
+
+.stats-bar-fill.hp {
+    background-color: #f44336;
+}
+
+.stats-bar-fill.mana {
     background-color: #2196f3;
 }
 
-.stats-bar.exp {
+.stats-bar-fill.exp {
     background-color: #ffeb3b;
 }
 .slot {

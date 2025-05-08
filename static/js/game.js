@@ -1,4 +1,17 @@
-window.player = new Player('Guilherme', 1, 100, 100, 100, 100, 0, 100, 10, .5, 6);
+window.player = new Player({
+    name: 'Guilherme', 
+    level: 1, 
+    hp: 100, 
+    hpMax: 100, 
+    mana: 100, 
+    manaMax: 100, 
+    exp: 0, 
+    expMax: 100, 
+    damage: 10, 
+    delayAttack: .5, 
+    step: 6
+});
+
 window.enemy = getCurrentMonster();
 
 const gameLoop = () => {
@@ -12,7 +25,7 @@ const gameLoop = () => {
     if (window.enemy.hp <= 0) {
         window.player.exp += 10;
         window.player.checkLevelUp();
-        currentMonster++;
+        // currentMonster++;
         window.enemy = getCurrentMonster();
     }
 
