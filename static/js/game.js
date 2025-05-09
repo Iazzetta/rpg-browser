@@ -77,18 +77,22 @@ window.player = new Player({
 
 window.enemy = getCurrentMonster();
 
+window.world = new World();
+
 const gameLoop = () => {
 
     window.player.update();
-    window.enemy.update();
+    window.world.update();
+    
+    if (window.enemy) {
+        window.enemy.update();
 
-    if (window.enemy.hp <= 0 && (!window.enemy.isDying && !window.enemy.isDead)) {
-        window.player.checkLevelUp();
-        window.enemy.die(() => {
-            setTimeout(() => {
-                window.enemy = getCurrentMonster();
-            },2000)
-        })
+        if (window.enemy.hp <= 0 && (!window.enemy.isDying && !window.enemy.isDead)) {
+            window.player.checkLevelUp();
+            window.enemy.die(() => {
+                window.enemy = null;
+            })
+        }
     }
     
     if (window.player.hp <= 0) {

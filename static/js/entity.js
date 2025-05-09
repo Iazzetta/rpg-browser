@@ -27,8 +27,11 @@ class Entity {
         if (this.isAttacking || this.isDying || this.isDead) return;
         this.isAttacking = true;
         this.spriteManager.setState(`attack${this.attackCount}`)
-        if (calculateDistance(this.x, this.y, entity_target.x, entity_target.y) <=  entity_target.size) {
-            entity_target.hp -= this.damage;
+
+        if (entity_target) {
+            if (calculateDistance(this.x, this.y, entity_target.x, entity_target.y) <=  entity_target.size) {
+                entity_target.hp -= this.damage;
+            }
         }
 
         // delay attack
