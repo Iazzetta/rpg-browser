@@ -5,6 +5,7 @@ class SpriteManager {
         this.state = 'idle';
         this.slowedBy = 0;
         this.slowFrameRate = 4;
+        this.stopped = false;
 
         this.element.style.width = `${this.config[this.state].width}px`;
         this.element.style.height = `${this.config[this.state].height}px`;
@@ -15,10 +16,12 @@ class SpriteManager {
     }
 
     setState(state) {
+        if (this.stopped) return;
         this.state = state;
     }
 
     draw() {
+        if (this.stopped) return;
         const selectedFrame = this.config[this.state];
 
         if (this.slowedBy >= this.slowFrameRate) {

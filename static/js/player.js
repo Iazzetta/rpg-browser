@@ -1,93 +1,37 @@
-class Player {
+class Player extends Entity {
     constructor(data) {
-        this.name = data.name;
-        this.level = data.level;
-        this.hp = data.hp;
-        this.hpMax = data.hpMax;
-        this.mana = data.mana;
-        this.manaMax = data.manaMax;
+        super(data);
         this.exp = data.exp;
         this.expMax = data.expMax;
-        this.damage = data.damage;
-        this.delayAttack = data.delayAttack;
-        this.step = data.step;
-
-        this.isAttacking = false;
-        this.x = 300;
-        this.y = FLOOR;
-        this.width = 162;
-        this.height = 162;
-        
         this.keyboard = {left: false, right: false, jump: false}
-        
         this.isJumping = false;
         this.jumpMaxHeight = 500;
-        this.gravityForce = 15
+        this.gravityForce = GRAVITY_FORCE
         this.jumpFall = false;
-        this.element = document.querySelector('.player')
-
-        this.attackCount = 1;
-
-        // load sprites
-        this.spriteManager = new SpriteManager(this.element, {
-            idle: {
-                src: '/static/img/sprites/warrior/idle.png',
-                frame: 1,
-                frames: 10,
-                width: 162,
-                height: 162
-            },
-            run: {
-                src: '/static/img/sprites/warrior/run.png',
-                frame: 1,
-                frames: 8,
-                width: 162,
-                height: 162
-            },
-            attack1: {
-                src: '/static/img/sprites/warrior/attack1.png',
-                frame: 1,
-                frames: 7,
-                width: 162,
-                height: 162
-            },
-            attack2: {
-                src: '/static/img/sprites/warrior/attack2.png',
-                frame: 1,
-                frames: 7,
-                width: 162,
-                height: 162
-            },
-            attack3: {
-                src: '/static/img/sprites/warrior/attack3.png',
-                frame: 1,
-                frames: 7,
-                width: 162,
-                height: 162
-            },
-        })
-
 
         this.initEvents();
     }
 
     update() {
+        this.spriteManager.update();
+        if (this.isDying || this.isDead) return;
         this.movement();
         this.draw();
-        this.spriteManager.update();
     }
 
     movement() {
 
         if (this.keyboard.left || this.keyboard.right) {
             if (!this.isAttacking) {
-                this.spriteManager.setState('run')
+                if (!this.isJumping) {
+                    this.spriteManager.setState('run')
+                }
 
                 if (this.keyboard.left) {
-                    this.x -= this.step
+                    this.x -= this.speed
                 }
                 if (this.keyboard.right) {
-                    this.x += this.step
+                    this.x += this.speed
                 }
             }
         }
@@ -99,15 +43,20 @@ class Player {
         this.jumpGravity();
 
         // idle state
-        if (!this.keyboard.left && !this.keyboard.right && !this.isAttacking && !this.isJumping) {
+        if (!this.keyboard.left 
+            && !this.keyboard.right 
+            && !this.isAttacking 
+            && !this.isJumping
+            && !this.isDying) {
             this.spriteManager.setState('idle')
         }
     }
 
     jump() {
-        if (this.isJumping) return;
+        if (this.isJumping || this.isDying || this.isDead) return;
         this.isJumping = true;
         this.jumpFall = false;
+        this.spriteManager.setState('jump')
     }
 
     jumpGravity() {
@@ -116,6 +65,7 @@ class Player {
                 this.y += this.gravityForce;
             } else {
                 this.jumpFall = true;
+                this.spriteManager.setState('fall')
                 if (this.y > FLOOR) {
                     this.y -= this.gravityForce;
                 }
@@ -124,26 +74,6 @@ class Player {
                 }
             }
         }
-    }
-
-    attack(entity) {
-        if (this.isAttacking) return;
-        this.isAttacking = true;
-        this.spriteManager.setState(`attack${this.attackCount}`)
-        if (calculateDistance(this.x, this.y, entity.x, entity.y) <=  entity.width) {
-            entity.hp -= this.damage;
-        }
-
-        // delay attack
-        setTimeout(() => {
-            this.isAttacking = false;
-            this.spriteManager.setState('idle')
-            if (this.attackCount >= 3) {
-                this.attackCount = 1;
-            } else {
-                this.attackCount++;
-            }
-        }, this.delayAttack * 1000);
     }
 
     draw() {
@@ -162,8 +92,8 @@ class Player {
         document.querySelector('.user-panel .stats-bar-fill.exp').innerText = `${this.exp}/${this.expMax}`;
 
         // player position
-        document.querySelector('.player').style.left = `${this.x}px`;
-        document.querySelector('.player').style.bottom = `${this.y}px`;
+        this.element.style.left = `${this.x}px`;
+        this.element.style.bottom = `${this.y}px`;
 
     }
 
@@ -173,6 +103,8 @@ class Player {
             this.exp = 0;
             this.expMax = this.expMax * 2;
             // todo - give 2 skill points
+        } else {
+            this.exp += 10;
         }
     }
 
@@ -184,6 +116,7 @@ class Player {
 
         // movement event
         document.addEventListener('keypress', (e) => {
+            if (this.isDying || this.isDead) return;
             const key = e.key.toLocaleLowerCase()
             if (key === 'a') {
                 this.keyboard.left = true;
@@ -199,6 +132,7 @@ class Player {
         });
 
         document.addEventListener('keyup', (e) => {
+            if (this.isDying || this.isDead) return;
             const key = e.key.toLocaleLowerCase()
             if (key === 'a') {
                 this.keyboard.left = false;

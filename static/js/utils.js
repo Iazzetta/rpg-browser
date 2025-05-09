@@ -1,6 +1,7 @@
 
 const FLOOR = 210;
 const ENTITY_SCALE = 2;
+const GRAVITY_FORCE = 15;
 
 let currentMonster = 0;
 

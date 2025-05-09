@@ -26,3 +26,7 @@
     cursor: pointer;
     z-index: 4;
 }
+
+/* .enemy, .player {
+    border: 1px solid red;
+} */
