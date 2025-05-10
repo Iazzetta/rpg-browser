@@ -13,19 +13,21 @@ class World {
     update() {
         if (this.isChangingMap) return;
 
-        if ((window.player.x + window.player.size) > this.worldWidth) {
+        if ((window.player.hitboxX + window.player.hitboxWidth) > this.worldWidth) {
             this.setNextMap();
         }
-        else if (window.player.x < 0){
+        else if (window.player.hitboxX < 0){
             this.setPreviousMap();
         }
     }
 
     setMap(index, from = 'next') {
         if (this.isChangingMap) return;
+        window.player.blockMovement = true;
         this.isChangingMap = true;
         this.openLoadingMap();
-        window.player.x = from == 'next' ? window.player.size + 100 : this.worldWidth - window.player.size - 100;
+    
+        window.player.x = from == 'next' ? 40 : this.worldWidth - window.player.hitboxWidth - 100;
 
         setTimeout(() => {
             // reset enemies
@@ -40,6 +42,7 @@ class World {
 
             this.isChangingMap = false;
             this.closeLoadingMap();
+            window.player.blockMovement = false;
         }, 2000)
     }
 

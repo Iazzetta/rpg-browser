@@ -6,7 +6,7 @@ window.player = new Player({
     mana: 100, 
     manaMax: 100, 
     damage: 10, 
-    x: 300,
+    x: 35,
     size: 162,
     speed: 6,
     element: '.player',
@@ -87,9 +87,7 @@ const gameLoop = () => {
 
         if (window.enemy.hp <= 0 && (!window.enemy.isDying && !window.enemy.isDead)) {
             window.player.checkLevelUp();
-            window.enemy.die(() => {
-                // window.enemy = null;
-            })
+            window.enemy.die()
         }
     }
     

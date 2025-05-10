@@ -13,6 +13,7 @@ class Player extends Entity {
     }
 
     update() {
+        super.update()
         this.spriteManager.update();
         if (this.isDying || this.isDead) return;
         this.movement();
@@ -20,18 +21,19 @@ class Player extends Entity {
     }
 
     movement() {
-
-        if (this.keyboard.left || this.keyboard.right) {
-            if (!this.isAttacking) {
-                if (!this.isJumping) {
-                    this.spriteManager.setState('run')
-                }
-
-                if (this.keyboard.left) {
-                    this.x -= this.speed
-                }
-                if (this.keyboard.right) {
-                    this.x += this.speed
+        if (!this.blockMovement) {
+            if (this.keyboard.left || this.keyboard.right) {
+                if (!this.isAttacking) {
+                    if (!this.isJumping) {
+                        this.spriteManager.setState('run')
+                    }
+    
+                    if (this.keyboard.left) {
+                        this.x -= this.speed
+                    }
+                    if (this.keyboard.right) {
+                        this.x += this.speed
+                    }
                 }
             }
         }

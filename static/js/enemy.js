@@ -4,9 +4,14 @@ class Enemy extends Entity{
         this.speed = data.speed;
         this.isAttacking = false;
         this.botInterval = null;
+
+        // todo - entender o porque disso
+        this.y = FLOOR + 22
+        
     }
 
     update() {
+        super.update(10)
         this.spriteManager.update();
         if (this.isDying || this.isDead) return;
         this.movement();
@@ -14,11 +19,11 @@ class Enemy extends Entity{
     }
 
     movement() {
-        if (this.x > (window.player.x + window.player.size)) {
+        if (this.hitboxX > (window.player.hitboxX + window.player.hitboxWidth)) {
             this.x -= this.speed;
             this.element.style.transform = `scale(-${ENTITY_SCALE}, ${ENTITY_SCALE})`;
         }
-        else if (this.x + this.size < window.player.x) {
+        else if ((this.hitboxX + this.hitboxWidth) < window.player.hitboxX) {
             this.x += this.speed;
             this.element.style.transform = `scale(${ENTITY_SCALE}, ${ENTITY_SCALE})`;
         }
