@@ -20,7 +20,8 @@ class Entity {
         this.isAttacking = false;
         this.isDying = false;
         this.isDead = false;
-
+        this.dieTimeout = null;
+        this.attackTimeout = null;
     }
 
     attack(entity_target) {
@@ -35,9 +36,11 @@ class Entity {
         }
 
         // delay attack
-        setTimeout(() => {
-            this.isAttacking = false;
+        clearTimeout(this.attackTimeout);
+        this.attackTimeout = setTimeout(() => {
+            if (this.isDying || this.isDead) return;
             this.spriteManager.setState('idle')
+            this.isAttacking = false;
             if (this.attackCount >= this.attackCountMax) {
                 this.attackCount = 1;
             } else {
@@ -50,11 +53,12 @@ class Entity {
         if (this.isDying) return;
         this.isDying = true;
         this.spriteManager.setState('die')
-        setTimeout(() => {
-            if (callback) callback();
+        clearTimeout(this.dieTimeout);
+        this.dieTimeout = setTimeout(() => {
             this.isDying = false;
             this.isDead = true;
             this.spriteManager.stopped = true;
+            if (callback) callback();
         }, this.dyingTime);
     }
 }

@@ -4,7 +4,6 @@ class Enemy extends Entity{
         this.speed = data.speed;
         this.isAttacking = false;
         this.botInterval = null;
-
     }
 
     update() {

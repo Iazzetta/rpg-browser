@@ -75,8 +75,6 @@ window.player = new Player({
     },
 });
 
-window.enemy = getCurrentMonster();
-
 window.world = new World();
 
 const gameLoop = () => {
@@ -90,7 +88,7 @@ const gameLoop = () => {
         if (window.enemy.hp <= 0 && (!window.enemy.isDying && !window.enemy.isDead)) {
             window.player.checkLevelUp();
             window.enemy.die(() => {
-                window.enemy = null;
+                // window.enemy = null;
             })
         }
     }
