@@ -9,7 +9,7 @@ window.player = new Player({
     x: 35,
     size: 162,
     speed: 6,
-    element: '.player',
+    element: 'player',
     delayAttack: .5, 
     attackCountMax: 3,
     dyingTime: 400,
@@ -77,17 +77,21 @@ window.player = new Player({
 
 window.world = new World();
 
+window.enemies = []
+
 const gameLoop = () => {
 
     window.player.update();
     window.world.update();
     
-    if (window.enemy) {
-        window.enemy.update();
-
-        if (window.enemy.hp <= 0 && (!window.enemy.isDying && !window.enemy.isDead)) {
-            window.player.checkLevelUp();
-            window.enemy.die()
+    for (const enemy of window.enemies) {
+        if (enemy) {
+            enemy.update();
+    
+            if (enemy.hp <= 0 && (!enemy.isDying && !enemy.isDead)) {
+                window.player.checkLevelUp();
+                enemy.die()
+            }
         }
     }
     

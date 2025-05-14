@@ -5,6 +5,7 @@ const Maps = [
         slug: 'welcome',
         background: '/static/img/background.png',
         floor: '#153f4a',
+        enemies: []
     },
     {
         id: 2,
@@ -12,6 +13,12 @@ const Maps = [
         slug: 'forest',
         background: '/static/img/background.png',
         floor: '#ff0000',
+        enemies: [
+            {
+                enemy_id: 1,
+                amount: 3
+            }
+        ]
     },
     {
         id: 3,
@@ -19,5 +26,11 @@ const Maps = [
         slug: 'cave',
         background: '/static/img/background.png',
         floor: '#000000',
+        enemies: [
+            {
+                enemy_id: 1,
+                amount: 5
+            },
+        ]
     }
 ]

@@ -11,6 +11,14 @@ const getCurrentMonster = () => {
     return new Enemy(monster);
 }
 
+const getCurrentMonsterById = (id) => {
+  for (const monster of MONSTERS) {
+    if (monster.id === id) {
+      return superCopy(monster);
+    }
+  }
+}
+
 function calculateDistance(x1, y1, x2, y2) {
     const dx = x2 - x1;
     const dy = y2 - y1;
@@ -43,4 +51,8 @@ function superCopy(source, deep) {
      }
    }
    return o;
- }
+}
+
+function randInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}

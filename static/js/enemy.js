@@ -29,7 +29,13 @@ class Enemy extends Entity{
         }
         else {
             if (window.player.hp > 0) {
-                this.attack(window.player)
+                this.attack(() => {
+                    if (window.player) {
+                        if (calculateDistance(this.hitboxX, this.hitboxY, window.player.hitboxX, window.player.hitboxY) <=  window.player.hitboxWidth) {
+                            window.player.hp -= this.damage;
+                        }
+                    }
+                })
             }
         }
     }

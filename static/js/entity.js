@@ -11,7 +11,9 @@ class Entity {
         this.y = FLOOR;
         this.size = data.size;
         this.speed = data.speed;
-        this.element = document.querySelector(data.element)
+        this.element = document.createElement('div')
+        this.element.classList.add('entity', data.element)
+        document.querySelector('.game-container').appendChild(this.element)
         this.delayAttack = data.delayAttack;
         this.attackCountMax = data.attackCountMax;
         this.dyingTime = data.dyingTime;
@@ -57,16 +59,12 @@ class Entity {
         }
     }
 
-    attack(entity_target) {
+    attack(callbackDamage) {
         if (this.isAttacking || this.isDying || this.isDead) return;
         this.isAttacking = true;
         this.spriteManager.setState(`attack${this.attackCount}`)
 
-        if (entity_target) {
-            if (calculateDistance(this.hitboxX, this.hitboxY, entity_target.hitboxX, entity_target.hitboxY) <=  entity_target.hitboxWidth) {
-                entity_target.hp -= this.damage;
-            }
-        }
+        callbackDamage()
 
         // delay attack
         clearTimeout(this.attackTimeout);
@@ -91,6 +89,7 @@ class Entity {
             this.isDying = false;
             this.isDead = true;
             this.spriteManager.stopped = true;
+            this.element.remove();
             if (callback) callback();
         }, this.dyingTime);
     }

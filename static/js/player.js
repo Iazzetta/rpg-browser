@@ -8,6 +8,7 @@ class Player extends Entity {
         this.jumpMaxHeight = 500;
         this.gravityForce = GRAVITY_FORCE
         this.jumpFall = false;
+        this.runCounter = 0
 
         this.initEvents();
     }
@@ -26,6 +27,12 @@ class Player extends Entity {
                 if (!this.isAttacking) {
                     if (!this.isJumping) {
                         this.spriteManager.setState('run')
+                        if (this.runCounter === 16) {
+                            createjs.Sound.play('running')
+                            this.runCounter = 0
+                        } else {
+                            this.runCounter++
+                        }
                     }
     
                     if (this.keyboard.left) {
@@ -59,6 +66,7 @@ class Player extends Entity {
         this.isJumping = true;
         this.jumpFall = false;
         this.spriteManager.setState('jump')
+        createjs.Sound.play('jump_up');
     }
 
     jumpGravity() {
@@ -73,6 +81,7 @@ class Player extends Entity {
                 }
                 else {
                     this.isJumping = false;
+                    createjs.Sound.play('jump_end');
                 }
             }
         }
@@ -113,7 +122,14 @@ class Player extends Entity {
     initEvents() {
         // attack event
         document.querySelector('.game-container').addEventListener('mousedown', (e) => {
-            window.player.attack(window.enemy);
+            window.player.attack(() => {
+                createjs.Sound.play(`attack_${this.attackCount}`);
+                for (const enemy of window.enemies) {
+                    if (calculateDistance(this.hitboxX, this.hitboxY, enemy.hitboxX, enemy.hitboxY) <=  enemy.hitboxWidth) {
+                        enemy.hp -= this.damage;
+                    }
+                }
+            });
         });
 
         // movement event
@@ -146,5 +162,14 @@ class Player extends Entity {
                 this.keyboard.jump = false;
             }
         });
+
+        // sounds
+        createjs.Sound.registerSound("static/sounds/warrior/attack1.wav", 'attack_1');
+        createjs.Sound.registerSound("static/sounds/warrior/attack2.wav", 'attack_2');
+        createjs.Sound.registerSound("static/sounds/warrior/attack3.wav", 'attack_3');
+        createjs.Sound.registerSound("static/sounds/warrior/jump_up.wav", 'jump_up');
+        createjs.Sound.registerSound("static/sounds/warrior/jump_end.wav", 'jump_end');
+        createjs.Sound.registerSound("static/sounds/warrior/running.wav", 'running');
+
     }
 }

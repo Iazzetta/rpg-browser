@@ -30,8 +30,8 @@ class World {
         window.player.x = from == 'next' ? 40 : this.worldWidth - window.player.hitboxWidth - 100;
 
         setTimeout(() => {
-            // reset enemies
-            window.enemy = getCurrentMonster();
+            // reset monsters
+            this.initEnemies()
 
             // set map
             const map = Maps[index]
@@ -79,5 +79,20 @@ class World {
         try {
             document.querySelector('.loading-map').remove();
         } catch (error) {}
+    }
+    
+    initEnemies() {
+        window.enemies = [];
+        document.querySelectorAll('.enemy').forEach(el => el.remove())
+        for (const e of Maps[this.currentMapIndex].enemies) {
+            const enemy = getCurrentMonsterById(e.enemy_id);
+            for (let i = 0; i < e.amount; i++) {
+                const newEnemy = new Enemy(enemy)
+                newEnemy.x = randInt(100, 200)
+                newEnemy.speed = randInt(2, 4)
+                window.enemies.push(newEnemy)
+            }
+
+        }
     }
 }

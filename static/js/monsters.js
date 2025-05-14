@@ -1,5 +1,6 @@
 const MONSTERS = [
     {
+        id: 1,
         name: 'Verme de Fogo',
         level: 1,
         hp: 30,
@@ -10,7 +11,7 @@ const MONSTERS = [
         x: window.innerWidth - 150,
         size: 90,
         speed: 3,
-        element: '.enemy',
+        element: 'enemy',
         delayAttack: 1,
         attackCountMax: 1,
         dyingTime: 500,
