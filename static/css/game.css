@@ -11,7 +11,7 @@
     position: fixed;
     bottom: 225px;
     z-index: 10;
-    font-size: 200px;
+    /* font-size: 200px; */
     transform: scale(2);
 }
 .player {

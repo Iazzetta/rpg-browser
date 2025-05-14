@@ -4,9 +4,13 @@ class Enemy extends Entity{
         this.speed = data.speed;
         this.isAttacking = false;
         this.botInterval = null;
+        this.takingHit = false;
+        this.directionEnemy = 'right';
 
         // todo - entender o porque disso
         this.y = FLOOR + 22
+
+        this.createBars();
         
     }
 
@@ -19,13 +23,19 @@ class Enemy extends Entity{
     }
 
     movement() {
+        if (this.takingHit) return;
+
         if (this.hitboxX > (window.player.hitboxX + window.player.hitboxWidth)) {
             this.x -= this.speed;
             this.element.style.transform = `scale(-${ENTITY_SCALE}, ${ENTITY_SCALE})`;
+            document.querySelector('.enemy-panel').style.transform = `scale(-1, 1)`;
+            this.directionEnemy = 'left';
         }
         else if ((this.hitboxX + this.hitboxWidth) < window.player.hitboxX) {
             this.x += this.speed;
             this.element.style.transform = `scale(${ENTITY_SCALE}, ${ENTITY_SCALE})`;
+            document.querySelector('.enemy-panel').style.transform = `scale(1, 1)`;
+            this.directionEnemy = 'right';
         }
         else {
             if (window.player.hp > 0) {
@@ -41,16 +51,43 @@ class Enemy extends Entity{
     }
 
     draw() {
-        // name
-        document.querySelector('#enemy-name').innerText = this.name;
-        // level
-        document.querySelector('#enemy-level').innerText = `Lv. ${this.level}`;
-        // hp
-        document.querySelector('.enemy-panel .stats-bar-fill.hp').style.width = `${this.hp / this.hpMax * 100}%`;
-        document.querySelector('.enemy-panel .stats-bar-fill.hp').innerText = `${this.hp}/${this.hpMax}`;
+
+        // draw bars
+        this.drawBars();
 
         // enemy position
         this.element.style.left = `${this.x}px`;
         this.element.style.bottom = `${this.y}px`;
+    }
+
+    createBars() {
+        const hpbar = document.createElement('div');
+        hpbar.classList.add('enemy-panel', 'stats-bar');
+        const hpbarFill = document.createElement('div');
+        hpbarFill.classList.add('stats-bar-fill');
+        hpbarFill.classList.add('hp');
+        hpbar.appendChild(hpbarFill);
+        this.element.appendChild(hpbar);
+
+    }
+
+    drawBars() {
+        this.element.querySelector('.enemy-panel .stats-bar-fill.hp').style.width = `${this.hp / this.hpMax * 100}%`;
+        this.element.querySelector('.enemy-panel .stats-bar-fill.hp').innerText = `${this.hp}/${this.hpMax}`;
+    }
+
+    takeHit(damage) {
+        this.hp -= damage;
+        this.takingHit = true;
+        if (this.directionEnemy === 'left') {
+            this.x += this.speed * 10;
+        } else {
+            this.x -= this.speed * 10;
+        }
+        this.spriteManager.setState('takehit');
+        setTimeout(() => {
+            this.takingHit = false;
+            this.spriteManager.setState('idle');
+        }, 300);
     }
 }

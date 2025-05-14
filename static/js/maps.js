@@ -5,7 +5,12 @@ const Maps = [
         slug: 'welcome',
         background: '/static/img/background.png',
         floor: '#153f4a',
-        enemies: []
+        enemies: [
+            {
+                enemy_id: 1,
+                amount: 5
+            }
+        ]
     },
     {
         id: 2,

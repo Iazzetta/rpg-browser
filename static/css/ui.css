@@ -57,10 +57,17 @@
 
 /* Enemy Panel */
 .enemy-panel {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    width: 200px;
+    /* position: fixed; */
+    /* top: 10px; */
+    /* right: 10px; */
+    width: 50px;
+    font-size: 6px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.enemy-panel.stats-bar {
+    border: 1px solid black;
 }
 
 /* Chat Panel */

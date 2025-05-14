@@ -126,7 +126,7 @@ class Player extends Entity {
                 createjs.Sound.play(`attack_${this.attackCount}`);
                 for (const enemy of window.enemies) {
                     if (calculateDistance(this.hitboxX, this.hitboxY, enemy.hitboxX, enemy.hitboxY) <=  enemy.hitboxWidth) {
-                        enemy.hp -= this.damage;
+                        enemy.takeHit(this.damage);
                     }
                 }
             });

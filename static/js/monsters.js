@@ -36,6 +36,13 @@ const MONSTERS = [
                 frames: 8,
                 width: 90,
                 height: 90
+            },
+            takehit: {
+                src: '/static/img/sprites/fire_worm/takehit.png',
+                frame: 1,
+                frames: 3,
+                width: 90,
+                height: 90
             }
         }
     },
