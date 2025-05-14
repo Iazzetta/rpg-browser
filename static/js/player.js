@@ -19,6 +19,20 @@ class Player extends Entity {
         if (this.isDying || this.isDead) return;
         this.movement();
         this.draw();
+        this.checkAttack();
+    }
+
+    checkAttack() {
+        if (this.keyboard.attack) {
+            window.player.attack(() => {
+                createjs.Sound.play(`attack_${this.attackCount}`);
+                for (const enemy of window.enemies) {
+                    if (calculateDistance(this.hitboxX, this.hitboxY, enemy.hitboxX, enemy.hitboxY) <=  enemy.hitboxWidth) {
+                        enemy.takeHit(this.damage);
+                    }
+                }
+            });
+        }
     }
 
     movement() {
@@ -41,6 +55,7 @@ class Player extends Entity {
                     if (this.keyboard.right) {
                         this.x += this.speed
                     }
+
                 }
             }
         }
@@ -122,20 +137,23 @@ class Player extends Entity {
     initEvents() {
         // attack event
         document.querySelector('.game-container').addEventListener('mousedown', (e) => {
-            window.player.attack(() => {
-                createjs.Sound.play(`attack_${this.attackCount}`);
-                for (const enemy of window.enemies) {
-                    if (calculateDistance(this.hitboxX, this.hitboxY, enemy.hitboxX, enemy.hitboxY) <=  enemy.hitboxWidth) {
-                        enemy.takeHit(this.damage);
-                    }
-                }
-            });
+            if (e.button == 0) {
+                this.keyboard.attack = true;
+            }
+        });
+
+        document.querySelector('.game-container').addEventListener('mouseup', (e) => {
+            if (e.button == 0) {
+                this.keyboard.attack = false;
+            }
         });
 
         // movement event
         document.addEventListener('keypress', (e) => {
             if (this.isDying || this.isDead) return;
+
             const key = e.key.toLocaleLowerCase()
+
             if (key === 'a') {
                 this.keyboard.left = true;
                 this.element.style.transform = `scale(-${ENTITY_SCALE}, ${ENTITY_SCALE})`;

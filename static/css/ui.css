@@ -24,7 +24,7 @@
 }
 
 .stats-bar-fill.exp {
-    background-color: #ffeb3b;
+    background-color: #FFC107;
 }
 .slot {
     width: 100%;
@@ -56,18 +56,18 @@
 }
 
 /* Enemy Panel */
-.enemy-panel {
-    /* position: fixed; */
-    /* top: 10px; */
-    /* right: 10px; */
+.enemy-panel.stats-bar {
     width: 50px;
-    font-size: 6px;
+    font-size: 5px;
     font-weight: bold;
     text-align: center;
+    background-color: #FFCDD2;
+    border: 1px solid black;
+    padding: 0;
 }
 
-.enemy-panel.stats-bar {
-    border: 1px solid black;
+.enemy-panel .stats-bar-fill {
+    padding: 0;
 }
 
 /* Chat Panel */

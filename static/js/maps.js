@@ -8,7 +8,7 @@ const Maps = [
         enemies: [
             {
                 enemy_id: 1,
-                amount: 5
+                amount: 1
             }
         ]
     },

@@ -43,7 +43,7 @@ class World {
             this.isChangingMap = false;
             this.closeLoadingMap();
             window.player.blockMovement = false;
-        }, 2000)
+        }, 500)
     }
 
     setPreviousMap() {
@@ -88,8 +88,8 @@ class World {
             const enemy = getCurrentMonsterById(e.enemy_id);
             for (let i = 0; i < e.amount; i++) {
                 const newEnemy = new Enemy(enemy)
-                newEnemy.x = randInt(100, 200)
-                newEnemy.speed = randInt(2, 4)
+                newEnemy.x = randInt((window.innerWidth / 2) + enemy.size, window.innerWidth - enemy.size)
+                newEnemy.speed = randInt(enemy.speed, enemy.speed * 2)
                 window.enemies.push(newEnemy)
             }
 

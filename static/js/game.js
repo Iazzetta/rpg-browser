@@ -1,3 +1,5 @@
+document.addEventListener('contextmenu', event => event.preventDefault());
+
 window.player = new Player({
     name: 'Guilherme', 
     level: 1, 
