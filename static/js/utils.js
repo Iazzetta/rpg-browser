@@ -2,7 +2,7 @@
 const FLOOR = 210;
 const ENTITY_SCALE = 2;
 const GRAVITY_FORCE = 15;
-const HITBOX_DEBUG = false;
+const HITBOX_DEBUG = true;
 let SOUND_VOLUME = 0.5;
 
 // document.addEventListener('contextmenu', event => event.preventDefault());

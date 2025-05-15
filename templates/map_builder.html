@@ -9,30 +9,14 @@
         /* Estilo para a lista vertical de mapas */
         .map-list-container {
             display: block; /* Volta para o layout de bloco padrão */
-            /* Remove propriedades de flexbox horizontal */
-            /* display: flex; */
-            /* overflow-x: hidden; */
             padding-bottom: 1rem; /* Espaço na parte inferior */
-            /* Remove gap horizontal */
-            /* gap: 1rem; */
-            /* Remove alinhamento flexbox */
-            /* align-items: flex-start; */
-            /* Remove estilos de drag-to-scroll */
-            /* cursor: grab; */
-            /* user-select: none; */
         }
-
-         /* Remove estilo de dragging */
-         /* .map-list-container.dragging { */
-         /* cursor: grabbing; */
-         /* } */
 
         /* Estilo para o cartão de mapa */
         .map-card {
             display: flex;
             flex-direction: column; /* Layout vertical dentro do card */
-            /* Remove flex-shrink: 0 */
-            /* flex-shrink: 0; */
+            width: 250px; /* Largura fixa para os cartões */
             height: 280px; /* Altura ajustada para acomodar preview e texto */
             background-color: white;
             border-radius: 0.5rem;
@@ -41,6 +25,9 @@
             transition: box-shadow 0.2s ease-in-out;
             position: relative;
             margin-bottom: 1rem; /* Espaço entre os cartões na lista vertical */
+             /* Centraliza os cartões na lista vertical */
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .map-card:hover {
@@ -79,15 +66,15 @@
 
         /* Estilo para a área de drop */
         .drop-target {
-            /* Remove min-width */
-            /* min-width: 100px; */
             width: 100%; /* Ocupa a largura total disponível */
             height: 50px; /* Altura menor para a área de drop vertical */
             border: 2px dashed transparent; /* Borda tracejada transparente por padrão */
             transition: border-color 0.2s ease-in-out; /* Transição suave para a borda */
-             /* Remove flex-shrink: 0 */
-             /* flex-shrink: 0; */
-             margin-bottom: 1rem; /* Espaço abaixo da área de drop */
+            margin-bottom: 1rem; /* Espaço abaixo da área de drop */
+             /* Centraliza as áreas de drop na lista vertical */
+            margin-left: auto;
+            margin-right: auto;
+             max-width: 250px; /* Limita a largura da área de drop para alinhar com os cartões */
         }
 
         .drop-target.drag-over {
@@ -199,13 +186,16 @@
         </div>
     </div>
 
+    <script src="{{ url_for('static', path='js/monsters.js') }}"></script>
     <script>
-        // Dados dos inimigos fornecidos pelo usuário
-        const ENEMY_TYPES = [
-            { id: 1, name: 'Fire Worm' },
-            { id: 2, name: 'Hero Knight' },
-            { id: 3, name: 'Evil Wizard' },
-        ];
+        // Dados dos inimigos fornecidos pelo usuário (mantido aqui para auto-suficiência do exemplo)
+        // Se você estiver usando um arquivo monsters.js, remova esta definição.
+        const ENEMY_TYPES = MONSTERS;
+
+        // Se você estiver usando um arquivo monsters.js, descomente a linha abaixo
+        // e remova a definição acima. Certifique-se de que monsters.js define a variável MONSTERS.
+        // const ENEMY_TYPES = typeof MONSTERS !== 'undefined' ? MONSTERS : [];
+
 
         // Elementos do DOM
         const mapListContainer = document.getElementById('map-list-container');
@@ -228,27 +218,31 @@
         // Contador para gerar IDs internos únicos (simples)
         let mapIdCounter = 0;
 
-        // Remove variáveis de drag-to-scroll
-        // let isDragging = false;
-        // let startPos = { scrollLeft: 0, clientX: 0 };
-        // let isCardDragging = false; // Flag para diferenciar drag-to-scroll de drag de cartão
-
 
         // Função para salvar os mapas no localStorage
         function saveMaps() {
             localStorage.setItem('mapCreatorMaps', JSON.stringify(maps));
+            console.log('Mapas salvos no localStorage:', maps); // Log para depuração
         }
 
         // Função para carregar os mapas do localStorage
         function loadMaps() {
             const savedMaps = localStorage.getItem('mapCreatorMaps');
             if (savedMaps) {
-                maps = JSON.parse(savedMaps);
-                // Encontra o maior ID existente para continuar o contador
-                mapIdCounter = maps.reduce((maxId, map) => Math.max(maxId, map.id || 0), 0) + 1;
+                try {
+                    maps = JSON.parse(savedMaps);
+                     console.log('Mapas carregados do localStorage:', maps); // Log para depuração
+                    // Encontra o maior ID existente para continuar o contador
+                    mapIdCounter = maps.reduce((maxId, map) => Math.max(maxId, map.id || 0), 0) + 1;
+                } catch (e) {
+                    console.error("Erro ao carregar mapas do localStorage:", e);
+                    maps = []; // Limpa os mapas em caso de erro de parsing
+                    mapIdCounter = 0;
+                }
             } else {
                 maps = [];
                 mapIdCounter = 0;
+                 console.log('Nenhum mapa encontrado no localStorage.'); // Log para depuração
             }
             renderMaps(); // Renderiza os mapas carregados
         }
@@ -313,7 +307,6 @@
 
             // Evento de clique para abrir o editor
             card.onclick = () => {
-                // Remove a verificação isDragging, pois não há drag-to-scroll na lista vertical
                 openEditModal(map.id);
             };
 
@@ -422,8 +415,9 @@
             editMapIdInput.value = mapToEdit.id;
             editNameInput.value = mapToEdit.name || '';
             editSlugInput.value = mapToEdit.slug || '';
-            editBackgroundInput.value = editBackgroundInput.value || ''; // Mantém o valor atual se não for alterado
-            editFloorInput.value = editFloorInput.value || ''; // Mantém o valor atual se não for alterado
+            // CORREÇÃO: Atribuir o valor do mapa a ser editado, não o valor atual do input
+            editBackgroundInput.value = mapToEdit.background || '';
+            editFloorInput.value = mapToEdit.floor || '';
 
 
             renderEnemiesList(mapToEdit.enemies); // Renderiza a lista de inimigos no editor
@@ -596,39 +590,6 @@
             // Libera o URL do Blob
             URL.revokeObjectURL(url);
         }
-
-
-        // Remove listeners de drag-to-scroll
-        /*
-        mapListContainer.addEventListener('mousedown', (e) => {
-            if (e.target.closest('.map-card') || e.target.closest('.drop-target')) {
-                return;
-            }
-            isDragging = true;
-            mapListContainer.classList.add('dragging');
-            startPos = {
-                scrollLeft: mapListContainer.scrollLeft,
-                clientX: e.clientX,
-            };
-            e.preventDefault();
-        });
-
-        mapListContainer.addEventListener('mouseleave', () => {
-            isDragging = false;
-            mapListContainer.classList.remove('dragging');
-        });
-
-        mapListContainer.addEventListener('mouseup', () => {
-            isDragging = false;
-            mapListContainer.classList.remove('dragging');
-        });
-
-        mapListContainer.addEventListener('mousemove', (e) => {
-            if (!isDragging || isCardDragging) return;
-            const dx = e.clientX - startPos.clientX;
-            mapListContainer.scrollLeft = startPos.scrollLeft - dx;
-        });
-        */
 
 
         // Adiciona listeners para os botões principais
