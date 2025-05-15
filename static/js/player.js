@@ -9,6 +9,7 @@ class Player extends Entity {
         this.gravityForce = GRAVITY_FORCE
         this.jumpFall = false;
         this.runCounter = 0
+        this.inventory = new Inventory(this);
 
         this.initEvents();
     }
@@ -20,6 +21,8 @@ class Player extends Entity {
         this.movement();
         this.draw();
         this.checkAttack();
+        this.inventory.update()
+        this.checkLevelUp()
     }
 
     checkAttack() {
@@ -128,9 +131,6 @@ class Player extends Entity {
             this.level++;
             this.exp = 0;
             this.expMax = this.expMax * 2;
-            // todo - give 2 skill points
-        } else {
-            this.exp += 10;
         }
     }
 
@@ -164,6 +164,21 @@ class Player extends Entity {
             }
             if (key === ' ') {
                 this.keyboard.jump = true;
+            }
+            if (key === '4') {
+                this.inventory.getItemByPosition(4).useItem(this);
+            }
+            if (key === '5') {
+                this.inventory.getItemByPosition(5).useItem(this);
+            }
+            if (key === '6') {
+                this.inventory.getItemByPosition(6).useItem(this);
+            }
+            if (key === '7') {
+                this.inventory.getItemByPosition(7).useItem(this);
+            }
+            if (key === '8') {
+                this.inventory.getItemByPosition(8).useItem(this);
             }
         });
 

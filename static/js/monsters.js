@@ -19,6 +19,7 @@ const MONSTERS = [
         yCustomOffset: -20,
         delayTakeHit: .3,
         hitboxCustomOffsetY: 10,
+        expReward: 10,
         spriteConfig: {
             idle: {
                 src: '/static/img/sprites/fire_worm/idle.png',
@@ -77,6 +78,7 @@ const MONSTERS = [
         yCustomOffset: 0,
         delayTakeHit: .8,
         hitboxCustomOffsetY: 10,
+        expReward: 20,
         spriteConfig: {
             idle: {
                 src: '/static/img/sprites/hero_knight/idle.png',
@@ -135,6 +137,7 @@ const MONSTERS = [
         yCustomOffset: 0,
         delayTakeHit: .8,
         hitboxCustomOffsetY: 7,
+        expReward: 50,
         spriteConfig: {
             idle: {
                 src: '/static/img/sprites/evil_wizard/idle.png',

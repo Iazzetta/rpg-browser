@@ -22,3 +22,9 @@ async def map_builder(request: Request):
     return templates.TemplateResponse(
         request=request, name="map_builder.html", context={}
     )
+
+@app.get("/modal/configuration", response_class=HTMLResponse)
+async def modal_configuration(request: Request):
+    return templates.TemplateResponse(
+        request=request, name="modal/modal_configuration.html", context={}
+    )

@@ -1,0 +1,15 @@
+<div class="modal">
+    <div class="modal__overlay"></div>
+    <div class="modal__content">
+        <div class="modal__header">
+            <h2 class="modal__title">{% block modal_title %}{% endblock %}</h2>
+        </div>
+        <div class="modal__body">
+            {% block modal_content %}
+            {% endblock %}
+        </div>
+        <div class="modal__footer">
+            {% block modal_actions %}{% endblock %}
+        </div>
+    </div>  
+</div>

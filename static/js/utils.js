@@ -3,6 +3,11 @@ const FLOOR = 210;
 const ENTITY_SCALE = 2;
 const GRAVITY_FORCE = 15;
 const HITBOX_DEBUG = false;
+let SOUND_VOLUME = 0.5;
+
+// document.addEventListener('contextmenu', event => event.preventDefault());
+
+createjs.Sound.volume = SOUND_VOLUME;
 
 let currentMonster = 0;
 
@@ -56,3 +61,18 @@ function superCopy(source, deep) {
 function randInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
+
+const updateVolume = (slider) => {
+  SOUND_VOLUME = slider.value / 100;
+  console.log('eae', SOUND_VOLUME)
+  createjs.Sound.volume = SOUND_VOLUME;
+}
+
+
+// events
+document.querySelectorAll('.menu-panel .slot').forEach((slot) => {
+  slot.addEventListener('click', async (e) => {
+    const key = slot.getAttribute('data-key');
+    await Modal.open(key);
+  })
+})

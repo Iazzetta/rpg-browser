@@ -114,3 +114,17 @@
     right: 10px;
     width: 400px;
 }
+
+/* Modal */
+.modal {
+    z-index: 101;
+    width: 400px;
+    max-height: 400px;
+    border: 1px solid black;
+    position: fixed;
+    top: calc(30% - 150px);
+    left: calc(50% - 150px);
+    background-color: #fafafa;
+    border-radius: 10px;
+    padding: 1rem;
+}

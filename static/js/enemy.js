@@ -3,6 +3,7 @@ class Enemy extends Entity{
        super(data);
         this.speed = data.speed;
         this.hitboxCustomOffsetY = data.hitboxCustomOffsetY;
+        this.expReward = data.expReward;
         this.isAttacking = false;
         this.botInterval = null;
         this.takingHit = false;

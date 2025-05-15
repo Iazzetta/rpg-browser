@@ -1,0 +1,18 @@
+{% extends "modal/base_modal.html" %}
+
+{% block modal_title %}Configurações{% endblock %}
+
+{% block modal_content %}
+<div>
+    <p>Efeitos do jogo</p>
+    <input type="range" min="1" max="100" value="50" class="slider" id="effects-volume" onchange="updateVolume(this)">
+</div>
+<div>
+    <p>Musica do jogo</p>
+    <input type="range" min="1" max="100" value="50" class="slider" id="music-volume">
+</div>
+{% endblock %}
+
+{% block modal_actions %}
+    <button class="modal__close">Fechar</button>
+{% endblock %}

@@ -1,5 +1,3 @@
-document.addEventListener('contextmenu', event => event.preventDefault());
-
 window.player = new Player({
     name: 'Guilherme', 
     level: 1, 
@@ -78,8 +76,31 @@ window.player = new Player({
     },
 });
 
+// presentear um item
+const potionItemGift = new Potion({
+    name: 'Poção HP Simples',
+    description: 'Aumenta seu HP em 30',
+    icon: '🧪',
+    increaseHp: 30,
+    cooldownTime: 5
+})
+const expChestItemGift = new ExpChest({
+    name: 'Cofre de Exp',
+    description: 'Aumenta seu EXP em 100',
+    icon: '🎁',
+    increaseExp: 100,
+    cooldownTime: 1
+})
+window.player.inventory.addItem(potionItemGift)
+window.player.inventory.addItem(expChestItemGift)
+
+window.player.inventory.setQuickItem(potionItemGift, 4);
+window.player.inventory.setQuickItem(expChestItemGift, 5);
+
+// init world
 window.world = new World();
 
+// init enemies
 window.enemies = []
 
 const gameLoop = () => {
@@ -92,7 +113,7 @@ const gameLoop = () => {
             enemy.update();
     
             if (enemy.hp <= 0 && (!enemy.isDying && !enemy.isDead)) {
-                window.player.checkLevelUp();
+                window.player.exp += enemy.expReward
                 enemy.die()
             }
         }
