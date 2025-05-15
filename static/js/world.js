@@ -89,7 +89,7 @@ class World {
             for (let i = 0; i < e.amount; i++) {
                 const newEnemy = new Enemy(enemy)
                 newEnemy.x = randInt((window.innerWidth / 2) + enemy.size, window.innerWidth - enemy.size)
-                newEnemy.speed = randInt(enemy.speed, enemy.speed * 2)
+                newEnemy.speed = randInt(enemy.speed, enemy.speed + 1)
                 window.enemies.push(newEnemy)
             }
 

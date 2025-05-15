@@ -7,9 +7,13 @@ const Maps = [
         floor: '#153f4a',
         enemies: [
             {
-                enemy_id: 1,
+                enemy_id: 2,
                 amount: 1
-            }
+            },
+            // {
+            //     enemy_id: 1,
+            //     amount: 1
+            // }
         ]
     },
     {

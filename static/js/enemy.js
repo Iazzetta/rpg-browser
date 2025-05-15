@@ -6,10 +6,6 @@ class Enemy extends Entity{
         this.botInterval = null;
         this.takingHit = false;
         this.directionEnemy = 'right';
-
-        // todo - entender o porque disso
-        this.y = FLOOR + 22
-
         this.createBars();
         
     }
@@ -25,19 +21,27 @@ class Enemy extends Entity{
     movement() {
         if (this.takingHit) return;
 
-        if (this.hitboxX > (window.player.hitboxX + window.player.hitboxWidth)) {
+        if (window.player.isDead) {
+            this.spriteManager.setState('idle');
+            return;
+        }
+
+        if (this.hitboxX >= (window.player.hitboxX + window.player.hitboxWidth)) {
             this.x -= this.speed;
             this.element.style.transform = `scale(-${ENTITY_SCALE}, ${ENTITY_SCALE})`;
             document.querySelector('.enemy-panel').style.transform = `scale(-1, 1)`;
             this.directionEnemy = 'left';
+            this.spriteManager.setState('run');
         }
-        else if ((this.hitboxX + this.hitboxWidth) < window.player.hitboxX) {
+        else if ((this.hitboxX + this.hitboxWidth) <= window.player.hitboxX) {
             this.x += this.speed;
             this.element.style.transform = `scale(${ENTITY_SCALE}, ${ENTITY_SCALE})`;
             document.querySelector('.enemy-panel').style.transform = `scale(1, 1)`;
             this.directionEnemy = 'right';
+            this.spriteManager.setState('run');
         }
-        else {
+
+        if (calculateDistance(this.hitboxX, this.hitboxY, window.player.hitboxX, window.player.hitboxY) <=  window.player.hitboxWidth) {
             if (window.player.hp > 0) {
                 this.attack(() => {
                     if (window.player) {
@@ -67,6 +71,8 @@ class Enemy extends Entity{
         hpbarFill.classList.add('stats-bar-fill');
         hpbarFill.classList.add('hp');
         hpbar.appendChild(hpbarFill);
+        hpbar.style.top = `${this.hitboxXOffset - 15}px`;
+        hpbar.style.left = `${this.hitboxYOffset }px`;
         this.element.appendChild(hpbar);
 
     }
@@ -77,8 +83,8 @@ class Enemy extends Entity{
     }
 
     takeHit(damage) {
-        this.hp -= damage;
         this.takingHit = true;
+        this.hp -= damage;
         if (this.directionEnemy === 'left') {
             this.x += this.speed * 10;
         } else {
@@ -88,6 +94,6 @@ class Enemy extends Entity{
         setTimeout(() => {
             this.takingHit = false;
             this.spriteManager.setState('idle');
-        }, 300);
+        }, this.delayTakeHit * 1000);
     }
 }

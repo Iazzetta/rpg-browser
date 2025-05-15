@@ -57,6 +57,7 @@
 
 /* Enemy Panel */
 .enemy-panel.stats-bar {
+    position: absolute;
     width: 50px;
     font-size: 5px;
     font-weight: bold;

@@ -8,7 +8,7 @@ class Entity {
         this.manaMax = data.manaMax;
         this.damage = data.damage;
         this.x = data.x;
-        this.y = FLOOR;
+        this.y = FLOOR - (data.yCustomOffset || 0);
         this.size = data.size;
         this.speed = data.speed;
         this.element = document.createElement('div')
@@ -17,6 +17,7 @@ class Entity {
         this.delayAttack = data.delayAttack;
         this.attackCountMax = data.attackCountMax;
         this.dyingTime = data.dyingTime;
+        this.delayTakeHit = data.delayTakeHit;
         this.spriteManager = new SpriteManager(this.element, data.spriteConfig)
         this.attackCount = 1;
         this.isAttacking = false;
@@ -24,7 +25,7 @@ class Entity {
         this.isDead = false;
         this.dieTimeout = null;
         this.attackTimeout = null;
-        this.hitboxWidth = 30;
+        this.hitboxWidth = 60;
         this.hitboxHeight = 50;
         this.hitboxXOffset = this.size / 2 - this.hitboxWidth / 2;
         this.hitboxYOffset = this.size / 2 - this.hitboxHeight / 2;
