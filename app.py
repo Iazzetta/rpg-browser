@@ -16,3 +16,9 @@ async def read_item(request: Request):
     return templates.TemplateResponse(
         request=request, name="index.html", context={}
     )
+
+@app.get("/map-builder", response_class=HTMLResponse)
+async def map_builder(request: Request):
+    return templates.TemplateResponse(
+        request=request, name="map_builder.html", context={}
+    )

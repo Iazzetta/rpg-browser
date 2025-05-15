@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criador de Mapas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilo para a lista vertical de mapas */
+        .map-list-container {
+            display: block; /* Volta para o layout de bloco padrão */
+            /* Remove propriedades de flexbox horizontal */
+            /* display: flex; */
+            /* overflow-x: hidden; */
+            padding-bottom: 1rem; /* Espaço na parte inferior */
+            /* Remove gap horizontal */
+            /* gap: 1rem; */
+            /* Remove alinhamento flexbox */
+            /* align-items: flex-start; */
+            /* Remove estilos de drag-to-scroll */
+            /* cursor: grab; */
+            /* user-select: none; */
+        }
+
+         /* Remove estilo de dragging */
+         /* .map-list-container.dragging { */
+         /* cursor: grabbing; */
+         /* } */
+
+        /* Estilo para o cartão de mapa */
+        .map-card {
+            display: flex;
+            flex-direction: column; /* Layout vertical dentro do card */
+            /* Remove flex-shrink: 0 */
+            /* flex-shrink: 0; */
+            height: 280px; /* Altura ajustada para acomodar preview e texto */
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: grab; /* Cursor para arrastar o cartão */
+            transition: box-shadow 0.2s ease-in-out;
+            position: relative;
+            margin-bottom: 1rem; /* Espaço entre os cartões na lista vertical */
+        }
+
+        .map-card:hover {
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Estilo para a área de preview no cartão */
+        .map-card-preview {
+            width: 100%;
+            height: 120px; /* Altura fixa para a preview */
+            background-size: cover;
+            background-position: center;
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+            position: relative; /* Para posicionar o chão dentro da preview */
+            overflow: hidden; /* Garante que o chão fique dentro dos limites */
+        }
+
+        /* Estilo para o chão dentro da preview */
+        .map-card-floor-preview {
+            width: 100%;
+            height: 30px; /* Altura do bloco do chão */
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            opacity: 0.6; /* Opacidade baixa */
+        }
+
+        /* Estilo para o conteúdo de texto no cartão */
+        .map-card-content {
+            padding: 1rem;
+            flex-grow: 1; /* Permite que o conteúdo de texto ocupe o espaço restante */
+             position: relative; /* Necessário para o posicionamento absoluto do índice e botão de excluir */
+        }
+
+
+        /* Estilo para a área de drop */
+        .drop-target {
+            /* Remove min-width */
+            /* min-width: 100px; */
+            width: 100%; /* Ocupa a largura total disponível */
+            height: 50px; /* Altura menor para a área de drop vertical */
+            border: 2px dashed transparent; /* Borda tracejada transparente por padrão */
+            transition: border-color 0.2s ease-in-out; /* Transição suave para a borda */
+             /* Remove flex-shrink: 0 */
+             /* flex-shrink: 0; */
+             margin-bottom: 1rem; /* Espaço abaixo da área de drop */
+        }
+
+        .drop-target.drag-over {
+            border-color: #3b82f6; /* Cor da borda quando um item está sendo arrastado sobre ela */
+        }
+
+        /* Estilo para o modal de edição */
+        .modal {
+            position: fixed; /* Posição fixa na tela */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75); /* Fundo semi-transparente */
+            display: flex; /* Usa flexbox para centralizar o conteúdo */
+            justify-content: center; /* Centraliza horizontalmente */
+            align-items: center; /* Centraliza verticalmente */
+            z-index: 50; /* Garante que fique acima de outros elementos */
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            max-width: 90%; /* Largura máxima do conteúdo */
+            max-height: 90vh; /* Altura máxima do conteúdo (90% da viewport height) */
+            overflow-y: auto; /* Adiciona scroll vertical se o conteúdo for muito grande */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-4">
+
+    <div class="container mx-auto">
+        <h1 class="text-3xl font-bold text-center mb-6 text-gray-800">Criador de Mapas</h1>
+
+        <div class="flex justify-center mb-6">
+            <button id="add-map-btn" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-200 ease-in-out transform hover:scale-105">
+                Adicionar Novo Mapa
+            </button>
+        </div>
+
+        <div id="map-list-container" class="map-list-container mb-6">
+            </div>
+
+        <div class="flex justify-center mt-6">
+            <button id="export-json-btn" class="bg-purple-600 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-200 ease-in-out transform hover:scale-105">
+                Exportar JSON dos Mapas
+            </button>
+        </div>
+    </div>
+
+    <div id="edit-modal" class="modal hidden">
+        <div class="modal-content w-full max-w-md">
+            <h2 id="edit-modal-title" class="text-2xl font-bold mb-4">Editar Mapa</h2>
+
+            <form id="edit-map-form">
+                <input type="hidden" id="edit-map-id"> <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit-name">
+                        Nome:
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="edit-name" type="text" name="name">
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit-slug">
+                        Slug:
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="edit-slug" type="text" name="slug">
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit-background">
+                        Background (URL/Path):
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="edit-background" type="text" name="background">
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit-floor">
+                        Cor do Chão (Hex):
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="edit-floor" type="text" name="floor">
+                </div>
+
+                <div class="mb-4">
+                    <h3 class="text-lg font-semibold mb-2">Inimigos:</h3>
+                    <div id="edit-enemies-list">
+                        </div>
+                    <div class="mt-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="add-enemy-select">
+                            Adicionar Inimigo:
+                        </label>
+                        <select id="add-enemy-select" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            <option value="">-- Selecione um inimigo --</option>
+                            </select>
+                    </div>
+                </div>
+
+                <div class="flex justify-end">
+                    <button type="button" id="cancel-edit-btn" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2 transition duration-200 ease-in-out">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200 ease-in-out">
+                        Salvar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Dados dos inimigos fornecidos pelo usuário
+        const ENEMY_TYPES = [
+            { id: 1, name: 'Fire Worm' },
+            { id: 2, name: 'Hero Knight' },
+            { id: 3, name: 'Evil Wizard' },
+        ];
+
+        // Elementos do DOM
+        const mapListContainer = document.getElementById('map-list-container');
+        const addMapBtn = document.getElementById('add-map-btn');
+        const exportJsonBtn = document.getElementById('export-json-btn');
+        const editModal = document.getElementById('edit-modal');
+        const editMapForm = document.getElementById('edit-map-form');
+        const editMapIdInput = document.getElementById('edit-map-id');
+        const editNameInput = document.getElementById('edit-name');
+        const editSlugInput = document.getElementById('edit-slug');
+        const editBackgroundInput = document.getElementById('edit-background');
+        const editFloorInput = document.getElementById('edit-floor');
+        const editEnemiesList = document.getElementById('edit-enemies-list');
+        const addEnemySelect = document.getElementById('add-enemy-select');
+        const cancelEditBtn = document.getElementById('cancel-edit-btn');
+
+        // Array para armazenar os mapas
+        let maps = [];
+
+        // Contador para gerar IDs internos únicos (simples)
+        let mapIdCounter = 0;
+
+        // Remove variáveis de drag-to-scroll
+        // let isDragging = false;
+        // let startPos = { scrollLeft: 0, clientX: 0 };
+        // let isCardDragging = false; // Flag para diferenciar drag-to-scroll de drag de cartão
+
+
+        // Função para salvar os mapas no localStorage
+        function saveMaps() {
+            localStorage.setItem('mapCreatorMaps', JSON.stringify(maps));
+        }
+
+        // Função para carregar os mapas do localStorage
+        function loadMaps() {
+            const savedMaps = localStorage.getItem('mapCreatorMaps');
+            if (savedMaps) {
+                maps = JSON.parse(savedMaps);
+                // Encontra o maior ID existente para continuar o contador
+                mapIdCounter = maps.reduce((maxId, map) => Math.max(maxId, map.id || 0), 0) + 1;
+            } else {
+                maps = [];
+                mapIdCounter = 0;
+            }
+            renderMaps(); // Renderiza os mapas carregados
+        }
+
+        // Função para renderizar um único cartão de mapa
+        function createMapCard(map, index) {
+            const card = document.createElement('div');
+            card.classList.add('map-card'); // Usa a classe CSS para o layout do cartão
+            card.setAttribute('draggable', true); // Torna o cartão arrastável
+            card.dataset.mapId = map.id; // Armazena o ID interno do mapa
+
+            // Área de Preview
+            const previewDiv = document.createElement('div');
+            previewDiv.classList.add('map-card-preview');
+            previewDiv.style.backgroundImage = map.background ? `url('${map.background}')` : 'none';
+
+            // Preview do Chão (bloco de cor) dentro da preview
+            const floorPreview = document.createElement('div');
+            floorPreview.classList.add('map-card-floor-preview');
+            floorPreview.style.backgroundColor = map.floor || '#ffffff';
+            previewDiv.appendChild(floorPreview);
+
+            card.appendChild(previewDiv); // Adiciona a preview ao cartão
+
+            // Área de Conteúdo de Texto
+            const contentDiv = document.createElement('div');
+            contentDiv.classList.add('map-card-content');
+
+            contentDiv.innerHTML = `
+                <div class="absolute top-2 right-2 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                    #${index + 1}
+                </div>
+                <h3 class="text-lg font-semibold mb-2">${map.name || 'Novo Mapa'}</h3>
+                <p class="text-gray-600 text-sm">Slug: ${map.slug || 'n/a'}</p>
+                <div class="mt-2">
+                    <span class="text-gray-700 text-sm">Inimigos:</span>
+                    <ul class="list-disc list-inside text-sm text-gray-600">
+                        ${map.enemies.length > 0 ?
+                            map.enemies.map(enemy => {
+                                const enemyType = ENEMY_TYPES.find(e => e.id === enemy.enemy_id);
+                                return `<li>${enemyType ? enemyType.name : `ID Desconhecido (${enemy.enemy_id})`}: ${enemy.amount}</li>`;
+                            }).join('')
+                            : '<li>Nenhum inimigo</li>'
+                        }
+                    </ul>
+                </div>
+            `;
+
+            // Botão de Excluir no Card (posicionado dentro do contentDiv)
+            const deleteBtn = document.createElement('button');
+            deleteBtn.classList.add('absolute', 'bottom-2', 'right-2', 'bg-red-500', 'hover:bg-red-700', 'text-white', 'font-bold', 'py-1', 'px-2', 'rounded', 'text-xs', 'transition', 'duration-200', 'ease-in-out');
+            deleteBtn.textContent = 'Excluir';
+            deleteBtn.onclick = (e) => {
+                e.stopPropagation(); // Impede que o clique no botão abra o editor
+                deleteMap(map.id);
+            };
+            contentDiv.appendChild(deleteBtn);
+
+
+            card.appendChild(contentDiv); // Adiciona o conteúdo de texto ao cartão
+
+
+            // Evento de clique para abrir o editor
+            card.onclick = () => {
+                // Remove a verificação isDragging, pois não há drag-to-scroll na lista vertical
+                openEditModal(map.id);
+            };
+
+
+            // Eventos de Drag and Drop para reordenação
+            card.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', map.id); // Define o ID do mapa como dado a ser transferido
+                // Adiciona uma classe para indicar que este cartão está sendo arrastado (opcional)
+                setTimeout(() => { // Pequeno delay para a classe ser aplicada antes do item sumir (efeito visual)
+                     card.classList.add('opacity-50');
+                }, 0);
+            });
+
+             card.addEventListener('dragend', () => {
+                card.classList.remove('opacity-50'); // Remove a classe ao finalizar o arrasto
+            });
+
+
+            return card;
+        }
+
+         // Função para criar uma área de drop
+        function createDropTarget(index) {
+            const dropTarget = document.createElement('div');
+            dropTarget.classList.add('drop-target');
+            dropTarget.dataset.dropIndex = index; // Armazena o índice onde este target está
+
+            dropTarget.addEventListener('dragover', (e) => {
+                e.preventDefault(); // Permite o drop
+                dropTarget.classList.add('drag-over'); // Adiciona classe visual
+            });
+
+            dropTarget.addEventListener('dragleave', () => {
+                dropTarget.classList.remove('drag-over'); // Remove classe visual
+            });
+
+            dropTarget.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropTarget.classList.remove('drag-over'); // Remove classe visual
+
+                const draggedMapId = e.dataTransfer.getData('text/plain'); // Obtém o ID do mapa arrastado
+                const draggedMapIndex = maps.findIndex(map => map.id == draggedMapId); // Encontra o índice do mapa arrastado
+
+                const targetIndex = parseInt(dropTarget.dataset.dropIndex, 10); // Obtém o índice do target
+
+                if (draggedMapIndex !== -1 && draggedMapIndex !== targetIndex) {
+                    // Move o mapa no array
+                    const [draggedMap] = maps.splice(draggedMapIndex, 1);
+                    maps.splice(targetIndex, 0, draggedMap);
+                    renderMaps(); // Renderiza novamente a lista
+                    saveMaps(); // Salva as alterações
+                }
+            });
+
+            return dropTarget;
+        }
+
+
+        // Função para renderizar todos os mapas
+        function renderMaps() {
+            mapListContainer.innerHTML = ''; // Limpa o container atual
+
+            // Adiciona a área de drop no início
+            mapListContainer.appendChild(createDropTarget(0));
+
+            maps.forEach((map, index) => {
+                mapListContainer.appendChild(createMapCard(map, index)); // Adiciona o cartão do mapa
+                 mapListContainer.appendChild(createDropTarget(index + 1)); // Adiciona a área de drop após o cartão
+            });
+
+             // Se não houver mapas, adiciona uma área de drop para permitir adicionar o primeiro
+            if (maps.length === 0) {
+                 mapListContainer.appendChild(createDropTarget(0));
+            }
+        }
+
+        // Função para adicionar um novo mapa
+        function addMap() {
+            const newMap = {
+                id: mapIdCounter++, // Usa o contador para o ID interno
+                name: `Novo Mapa ${maps.length + 1}`,
+                slug: `novo-mapa-${maps.length + 1}`,
+                background: '',
+                floor: '#ffffff',
+                enemies: [],
+            };
+            maps.push(newMap); // Adiciona o novo mapa ao array
+            renderMaps(); // Renderiza a lista atualizada
+            saveMaps(); // Salva as alterações
+        }
+
+        // Função para excluir um mapa
+        function deleteMap(mapId) {
+            // Filtra a lista removendo o mapa com o ID correspondente
+            maps = maps.filter(map => map.id !== mapId);
+            renderMaps(); // Renderiza a lista atualizada
+            saveMaps(); // Salva as alterações
+        }
+
+        // Função para abrir o modal de edição
+        function openEditModal(mapId) {
+            const mapToEdit = maps.find(map => map.id === mapId);
+            if (!mapToEdit) return;
+
+            // Preenche o formulário com os dados do mapa
+            editMapIdInput.value = mapToEdit.id;
+            editNameInput.value = mapToEdit.name || '';
+            editSlugInput.value = mapToEdit.slug || '';
+            editBackgroundInput.value = editBackgroundInput.value || ''; // Mantém o valor atual se não for alterado
+            editFloorInput.value = editFloorInput.value || ''; // Mantém o valor atual se não for alterado
+
+
+            renderEnemiesList(mapToEdit.enemies); // Renderiza a lista de inimigos no editor
+            populateAddEnemySelect(mapToEdit.enemies); // Popula o dropdown de adicionar inimigo
+
+            editModal.classList.remove('hidden'); // Mostra o modal
+        }
+
+        // Função para fechar o modal de edição
+        function closeEditModal() {
+            editModal.classList.add('hidden'); // Oculta o modal
+            editMapForm.reset(); // Limpa o formulário
+            editEnemiesList.innerHTML = ''; // Limpa a lista de inimigos
+        }
+
+        // Função para renderizar a lista de inimigos no editor
+        function renderEnemiesList(enemies) {
+            editEnemiesList.innerHTML = ''; // Limpa a lista atual
+
+            enemies.forEach(enemy => {
+                const enemyType = ENEMY_TYPES.find(e => e.id === enemy.enemy_id);
+                const enemyName = enemyType ? enemyType.name : `ID Desconhecido (${enemy.enemy_id})`;
+
+                const enemyDiv = document.createElement('div');
+                enemyDiv.classList.add('flex', 'items-center', 'mb-2');
+                enemyDiv.innerHTML = `
+                    <span class="mr-2">${enemyName}:</span>
+                    <input
+                        type="number"
+                        min="0"
+                        value="${enemy.amount}"
+                        class="shadow appearance-none border rounded w-16 py-1 px-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2 enemy-amount-input"
+                        data-enemy-id="${enemy.enemy_id}"
+                    />
+                    <button type="button" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded text-xs transition duration-200 ease-in-out remove-enemy-btn" data-enemy-id="${enemy.enemy_id}">
+                        Remover
+                    </button>
+                `;
+                editEnemiesList.appendChild(enemyDiv);
+            });
+
+            // Adiciona listeners para os inputs de quantidade (usando delegação de eventos)
+            editEnemiesList.querySelectorAll('.enemy-amount-input').forEach(input => {
+                input.addEventListener('change', handleEnemyAmountChange);
+            });
+
+            // Adiciona listeners para os botões de remover (usando delegação de eventos)
+             editEnemiesList.querySelectorAll('.remove-enemy-btn').forEach(button => {
+                button.addEventListener('click', handleRemoveEnemy);
+            });
+        }
+
+        // Lida com a mudança na quantidade de inimigos no editor
+        function handleEnemyAmountChange(event) {
+            const input = event.target;
+            const enemyId = parseInt(input.dataset.enemyId, 10);
+            const amount = parseInt(input.value, 10) || 0;
+
+            // Atualiza o mapa temporário no editor (não salva ainda)
+            const currentMapId = parseInt(editMapIdInput.value, 10);
+            const mapToEdit = maps.find(map => map.id === currentMapId);
+            if (mapToEdit) {
+                const enemy = mapToEdit.enemies.find(e => e.enemy_id === enemyId);
+                if (enemy) {
+                    enemy.amount = amount;
+                }
+            }
+        }
+
+         // Lida com a remoção de inimigos no editor
+        function handleRemoveEnemy(event) {
+            const button = event.target;
+            const enemyId = parseInt(button.dataset.enemyId, 10);
+
+            // Remove o inimigo do mapa temporário no editor
+            const currentMapId = parseInt(editMapIdInput.value, 10);
+            const mapToEdit = maps.find(map => map.id === currentMapId);
+            if (mapToEdit) {
+                mapToEdit.enemies = mapToEdit.enemies.filter(enemy => enemy.enemy_id !== enemyId);
+                renderEnemiesList(mapToEdit.enemies); // Renderiza a lista de inimigos atualizada no editor
+                 populateAddEnemySelect(mapToEdit.enemies); // Atualiza o dropdown de adicionar inimigo
+            }
+        }
+
+
+        // Popula o dropdown de adicionar inimigo no editor
+        function populateAddEnemySelect(currentEnemies) {
+            addEnemySelect.innerHTML = '<option value="">-- Selecione um inimigo --</option>'; // Limpa e adiciona opção padrão
+
+            ENEMY_TYPES.forEach(enemyType => {
+                // Verifica se o inimigo já está na lista atual do mapa
+                const isAlreadyAdded = currentEnemies.some(enemy => enemy.enemy_id === enemyType.id);
+                if (!isAlreadyAdded) {
+                    const option = document.createElement('option');
+                    option.value = enemyType.id;
+                    option.textContent = enemyType.name;
+                    addEnemySelect.appendChild(option);
+                }
+            });
+        }
+
+        // Lida com a adição de um inimigo selecionado no dropdown
+        addEnemySelect.addEventListener('change', (event) => {
+            const enemyId = parseInt(event.target.value, 10);
+            if (enemyId) {
+                const currentMapId = parseInt(editMapIdInput.value, 10);
+                const mapToEdit = maps.find(map => map.id === currentMapId);
+                 if (mapToEdit) {
+                    // Adiciona o novo inimigo com quantidade 0
+                    mapToEdit.enemies.push({ enemy_id: enemyId, amount: 0 });
+                    renderEnemiesList(mapToEdit.enemies); // Renderiza a lista de inimigos atualizada no editor
+                    populateAddEnemySelect(mapToEdit.enemies); // Atualiza o dropdown de adicionar inimigo
+                    event.target.value = ""; // Reseta o dropdown
+                }
+            }
+        });
+
+        // Lida com o envio do formulário de edição
+        editMapForm.addEventListener('submit', (event) => {
+            event.preventDefault(); // Impede o recarregamento da página
+
+            const mapId = parseInt(editMapIdInput.value, 10);
+            const mapIndex = maps.findIndex(map => map.id === mapId);
+
+            if (mapIndex !== -1) {
+                // Atualiza os dados do mapa no array 'maps' com os valores do formulário
+                maps[mapIndex].name = editNameInput.value;
+                maps[mapIndex].slug = editSlugInput.value;
+                maps[mapIndex].background = editBackgroundInput.value;
+                maps[mapIndex].floor = editFloorInput.value;
+
+                // A lista de inimigos já foi atualizada diretamente no objeto maps[mapIndex]
+                // pelas funções handleEnemyAmountChange e handleRemoveEnemy
+
+                saveMaps(); // Salva as alterações
+                renderMaps(); // Renderiza a lista atualizada
+                closeEditModal(); // Fecha o modal
+            }
+        });
+
+        // Lida com o clique no botão Cancelar do modal
+        cancelEditBtn.addEventListener('click', closeEditModal);
+
+        // Função para exportar os mapas como JSON
+        function exportJson() {
+            // Mapeia os mapas para o formato JSON desejado, usando o índice + 1 como ID
+            const exportedMaps = maps.map((map, index) => ({
+                id: index + 1, // Usa o índice + 1 como ID no JSON exportado
+                name: map.name,
+                slug: map.slug,
+                background: map.background,
+                floor: map.floor,
+                enemies: map.enemies.map(enemy => ({
+                    enemy_id: enemy.enemy_id,
+                    amount: enemy.amount,
+                })),
+            }));
+            const jsonString = JSON.stringify(exportedMaps, null, 2); // Converte para string JSON formatada
+
+            // Cria um Blob com o conteúdo JSON
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            // Cria um URL para o Blob
+            const url = URL.createObjectURL(blob);
+            // Cria um link temporário para download
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'maps.json'; // Nome do arquivo
+            // Simula um clique no link para iniciar o download
+            link.click();
+            // Libera o URL do Blob
+            URL.revokeObjectURL(url);
+        }
+
+
+        // Remove listeners de drag-to-scroll
+        /*
+        mapListContainer.addEventListener('mousedown', (e) => {
+            if (e.target.closest('.map-card') || e.target.closest('.drop-target')) {
+                return;
+            }
+            isDragging = true;
+            mapListContainer.classList.add('dragging');
+            startPos = {
+                scrollLeft: mapListContainer.scrollLeft,
+                clientX: e.clientX,
+            };
+            e.preventDefault();
+        });
+
+        mapListContainer.addEventListener('mouseleave', () => {
+            isDragging = false;
+            mapListContainer.classList.remove('dragging');
+        });
+
+        mapListContainer.addEventListener('mouseup', () => {
+            isDragging = false;
+            mapListContainer.classList.remove('dragging');
+        });
+
+        mapListContainer.addEventListener('mousemove', (e) => {
+            if (!isDragging || isCardDragging) return;
+            const dx = e.clientX - startPos.clientX;
+            mapListContainer.scrollLeft = startPos.scrollLeft - dx;
+        });
+        */
+
+
+        // Adiciona listeners para os botões principais
+        addMapBtn.addEventListener('click', addMap);
+        exportJsonBtn.addEventListener('click', exportJson);
+
+        // Carrega os mapas ao iniciar a página
+        loadMaps();
+
+    </script>
+
+</body>
+</html>

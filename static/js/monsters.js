@@ -12,11 +12,13 @@ const MONSTERS = [
         size: 90,
         speed: 3,
         element: 'enemy',
-        delayAttack: 2,
+        delayAttack: .5,
+        cooldownAttack: 2,
         attackCountMax: 1,
         dyingTime: 500,
         yCustomOffset: -20,
         delayTakeHit: .3,
+        hitboxCustomOffsetY: 10,
         spriteConfig: {
             idle: {
                 src: '/static/img/sprites/fire_worm/idle.png',
@@ -69,10 +71,12 @@ const MONSTERS = [
         speed: 3,
         element: 'enemy',
         delayAttack: .5,
+        cooldownAttack: .5,
         attackCountMax: 1,
         dyingTime: 500,
         yCustomOffset: 0,
         delayTakeHit: .8,
+        hitboxCustomOffsetY: 10,
         spriteConfig: {
             idle: {
                 src: '/static/img/sprites/hero_knight/idle.png',
@@ -111,4 +115,63 @@ const MONSTERS = [
             }
         }
     },
+    {
+        id: 3,
+        name: 'Evil Wizard',
+        level: 10,
+        hp: 500,
+        hpMax: 500,
+        mana: 100,
+        manaMax: 100,
+        damage: 15,
+        x: window.innerWidth - 150,
+        size: 150,
+        speed: 3,
+        element: 'enemy',
+        delayAttack: .5,
+        cooldownAttack: 3,
+        attackCountMax: 1,
+        dyingTime: 500,
+        yCustomOffset: 0,
+        delayTakeHit: .8,
+        hitboxCustomOffsetY: 7,
+        spriteConfig: {
+            idle: {
+                src: '/static/img/sprites/evil_wizard/idle.png',
+                frame: 1,
+                frames: 11,
+                width: 150,
+                height: 150
+            },
+            attack1: {
+                src: '/static/img/sprites/evil_wizard/attack1.png',
+                frame: 1,
+                frames: 6,
+                width: 150,
+                height: 150
+            },
+            die: {
+                src: '/static/img/sprites/evil_wizard/death.png',
+                frame: 1,
+                frames: 9,
+                width: 150,
+                height: 150
+            },
+            takehit: {
+                src: '/static/img/sprites/evil_wizard/takehit.png',
+                frame: 1,
+                frames: 4,
+                width: 150,
+                height: 150
+            },
+            run: {
+                src: '/static/img/sprites/evil_wizard/run.png',
+                frame: 1,
+                frames: 8,
+                width: 150,
+                height: 150
+            }
+        }
+    },
+
 ]

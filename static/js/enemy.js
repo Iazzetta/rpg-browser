@@ -2,6 +2,7 @@ class Enemy extends Entity{
     constructor(data) {
        super(data);
         this.speed = data.speed;
+        this.hitboxCustomOffsetY = data.hitboxCustomOffsetY;
         this.isAttacking = false;
         this.botInterval = null;
         this.takingHit = false;
@@ -11,7 +12,7 @@ class Enemy extends Entity{
     }
 
     update() {
-        super.update(10)
+        super.update(this.hitboxCustomOffsetY)
         this.spriteManager.update();
         if (this.isDying || this.isDead) return;
         this.movement();
@@ -41,7 +42,7 @@ class Enemy extends Entity{
             this.spriteManager.setState('run');
         }
 
-        if (calculateDistance(this.hitboxX, this.hitboxY, window.player.hitboxX, window.player.hitboxY) <=  window.player.hitboxWidth) {
+        if (!this.isAttacking && calculateDistance(this.hitboxX, this.hitboxY, window.player.hitboxX, window.player.hitboxY) <=  window.player.hitboxWidth) {
             if (window.player.hp > 0) {
                 this.attack(() => {
                     if (window.player) {

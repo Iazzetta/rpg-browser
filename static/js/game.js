@@ -13,6 +13,7 @@ window.player = new Player({
     speed: 6,
     element: 'player',
     delayAttack: .5, 
+    cooldownAttack: .5, 
     attackCountMax: 3,
     dyingTime: 400,
     exp: 0, 

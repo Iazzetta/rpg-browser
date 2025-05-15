@@ -14,8 +14,9 @@ class Entity {
         this.element = document.createElement('div')
         this.element.classList.add('entity', data.element)
         document.querySelector('.game-container').appendChild(this.element)
-        this.delayAttack = data.delayAttack;
+        this.cooldownAttack = data.cooldownAttack;
         this.attackCountMax = data.attackCountMax;
+        this.delayAttack = data.delayAttack;
         this.dyingTime = data.dyingTime;
         this.delayTakeHit = data.delayTakeHit;
         this.spriteManager = new SpriteManager(this.element, data.spriteConfig)
@@ -67,18 +68,22 @@ class Entity {
 
         callbackDamage()
 
+        setTimeout(() => {
+            this.spriteManager.setState('idle')
+        }, this.delayAttack * 1000)
+
         // delay attack
         clearTimeout(this.attackTimeout);
         this.attackTimeout = setTimeout(() => {
             if (this.isDying || this.isDead) return;
-            this.spriteManager.setState('idle')
+            // this.spriteManager.setState('idle')
             this.isAttacking = false;
             if (this.attackCount >= this.attackCountMax) {
                 this.attackCount = 1;
             } else {
                 this.attackCount++;
             }
-        }, this.delayAttack * 1000);
+        }, this.cooldownAttack * 1000);
     }
 
     die(callback = false) {
