@@ -248,5 +248,64 @@ const MONSTERS = [
           "height": 128
         }
       }
+    },
+    {
+      "id": 5,
+      "name": "A Vampira",
+      "spriteFolderName": "woman_vampire",
+      "level": 30,
+      "hp": 1350,
+      "hpMax": 1350,
+      "mana": 100,
+      "manaMax": 100,
+      "damage": 43,
+      "size": 128,
+      "speed": 3,
+      "element": "enemy",
+      "delayAttack": "1",
+      "cooldownAttack": "1",
+      "attackCountMax": 1,
+      "dyingTime": 1000,
+      "yCustomOffset": 0,
+      "delayTakeHit": "0.8",
+      "hitboxCustomOffsetY": 0,
+      "expReward": 120,
+      "spriteConfig": {
+        "idle": {
+          "src": "/static/img/sprites/woman_vampire/idle.png",
+          "frame": 1,
+          "frames": 5,
+          "width": 128,
+          "height": 128
+        },
+        "attack1": {
+          "src": "/static/img/sprites/woman_vampire/attack1.png",
+          "frame": 1,
+          "frames": 5,
+          "width": 128,
+          "height": 128
+        },
+        "die": {
+          "src": "/static/img/sprites/woman_vampire/death.png",
+          "frame": 1,
+          "frames": 10,
+          "width": 128,
+          "height": 128
+        },
+        "takehit": {
+          "src": "/static/img/sprites/woman_vampire/takehit.png",
+          "frame": 1,
+          "frames": 2,
+          "width": 128,
+          "height": 128
+        },
+        "run": {
+          "src": "/static/img/sprites/woman_vampire/run.png",
+          "frame": 1,
+          "frames": 6,
+          "width": 128,
+          "height": 128
+        }
+      }
     }
   ]

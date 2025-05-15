@@ -7,7 +7,7 @@ const Maps = [
     "floor": "green",
     "enemies": [
       {
-        "enemy_id": 1,
+        "enemy_id": 5,
         "amount": 1
       }
     ]
