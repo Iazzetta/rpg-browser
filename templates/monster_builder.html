@@ -32,147 +32,152 @@
 </style>
 
 <div class="p-2">
-<h1 class="text-xl font-bold mb-4 text-center text-gray-800">Criador de Monstros</h1>
+    <div class="flex justify-between mb-4 mt-0">
+        <h1 class="text-xl font-bold m-auto text-center text-gray-800">Criador de Monstros</h1>
+        <button id="hide-toolbar-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold px-3 py-2 rounded-md text-xs transition duration-300 ease-in-out">
+            Esconder
+        </button>
+    </div>
 
-<div class="mb-4">
-    <label for="monster-select" class="block text-sm font-medium text-gray-700 mb-1">Selecionar Monstro:</label>
-    <select id="monster-select" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-        <option value="">-- Criar Novo Monstro --</option>
-        </select>
-</div>
-
-<div class="mb-4 flex justify-center space-x-2">
-        <button id="clone-monster-btn" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-1 px-3 rounded-md text-xs transition duration-300 ease-in-out" disabled>
-        Clonar Monstro
-    </button>
-    <button id="export-monsters-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded-md text-xs transition duration-300 ease-in-out">
-        Exportar Monstros (JSON)
-    </button>
-</div>
-
-<div id="monster-form-section" class="bg-gray-50 p-4 rounded-md">
-    <h2 id="form-title" class="text-lg font-semibold mb-3 text-gray-700">Criar Novo Monstro</h2>
-
-    <div class="sticky-top flex flex-col items-center mb-4">
-        <h3 class="text-base font-medium mb-1 text-gray-700">Prévia da Sprite</h3>
-        <div id="sprite-preview" class="sprite-preview border border-gray-300 rounded-md" style="width: 90px; height: 90px;">
-            </div>
-        <select id="animation-selector" class="mt-1 p-1 border rounded-md text-xs">
+    <div class="mb-4">
+        <label for="monster-select" class="block text-sm font-medium text-gray-700 mb-1">Selecionar Monstro:</label>
+        <select id="monster-select" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            <option value="">-- Criar Novo Monstro --</option>
             </select>
-        <div class=" space-x-2 mt-4">
-            <button type="button" id="delete-monster-btn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded-md text-xs transition duration-300 ease-in-out" disabled>
-                Excluir Monstro
-            </button>
-            <button type="submit" form="monster-form" class="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded-md text-xs transition duration-300 ease-in-out">
-                Salvar Monstro
-            </button>
-            <button type="button" id="spawn-monster-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded-md text-xs transition duration-300 ease-in-out">
-                Spawn Monstro
-            </button>
+    </div>
+
+    <div class="mb-4 flex justify-center space-x-2">
+            <button id="clone-monster-btn" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-1 px-3 rounded-md text-xs transition duration-300 ease-in-out" disabled>
+            Clonar Monstro
+        </button>
+        <button id="export-monsters-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded-md text-xs transition duration-300 ease-in-out">
+            Exportar Monstros (JSON)
+        </button>
+    </div>
+
+    <div id="monster-form-section" class="bg-gray-50 p-4 rounded-md">
+        <h2 id="form-title" class="text-lg font-semibold mb-3 text-gray-700">Criar Novo Monstro</h2>
+
+        <div class="sticky-top flex flex-col items-center mb-4">
+            <h3 class="text-base font-medium mb-1 text-gray-700">Prévia da Sprite</h3>
+            <div id="sprite-preview" class="sprite-preview border border-gray-300 rounded-md" style="width: 90px; height: 90px;">
+                </div>
+            <select id="animation-selector" class="mt-1 p-1 border rounded-md text-xs">
+                </select>
+            <div class="flex space-x-2 mt-4">
+                <button type="button" id="delete-monster-btn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded-md text-xs transition duration-300 ease-in-out" disabled>
+                    Excluir
+                </button>
+                <button type="submit" form="monster-form" class="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded-md text-xs transition duration-300 ease-in-out">
+                    Salvar
+                </button>
+                <button type="button" id="spawn-monster-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded-md text-xs transition duration-300 ease-in-out">
+                    Spawn
+                </button>
+            </div>
+        </div>
+
+        <div class="form-scroll-container">
+                <form id="monster-form" class="grid grid-cols-1 gap-3">
+                <div>
+                    <label for="monster-id" class="block text-xs font-medium text-gray-700">ID:</label>
+                    <input type="number" id="monster-id" name="id" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" readonly>
+                </div>
+                <div>
+                    <label for="monster-name" class="block text-xs font-medium text-gray-700">Nome:</label>
+                    <input type="text" id="monster-name" name="name" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+                </div>
+                    <div>
+                    <label for="sprite-folder-name" class="block text-xs font-medium text-gray-700">Nome da Pasta da Sprite:</label>
+                    <input type="text" id="sprite-folder-name" name="spriteFolderName" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+                </div>
+                <div>
+                    <label for="monster-level" class="block text-xs font-medium text-gray-700">Nível:</label>
+                    <input type="number" id="monster-level" name="level" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+                </div>
+                <div>
+                    <label for="monster-hp" class="block text-xs font-medium text-gray-700">HP:</label>
+                    <input type="number" id="monster-hp" name="hp" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+                </div>
+                <div>
+                    <label for="monster-damage" class="block text-xs font-medium text-gray-700">Dano:</label>
+                    <input type="number" id="monster-damage" name="damage" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+                </div>
+                    <div>
+                    <label for="monster-size" class="block text-xs font-medium text-gray-700">Tamanho (Size):</label>
+                    <input type="number" id="monster-size" name="size" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+                </div>
+                <div>
+                    <label for="monster-speed" class="block text-xs font-medium text-gray-700">Velocidade:</label>
+                    <input type="number" id="monster-speed" name="speed" step="0.1" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+                </div>
+                    <div>
+                    <label for="monster-expReward" class="block text-xs font-medium text-gray-700">Recompensa EXP:</label>
+                    <input type="number" id="monster-expReward" name="expReward" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+                </div>
+                    <div>
+                    <label for="monster-description" class="block text-xs font-medium text-gray-700">Descrição:</label>
+                    <textarea id="monster-description" name="description" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" rows="2"></textarea>
+                </div>
+
+
+                <div id="additional-fields" class="space-y-3 border-t pt-3 mt-3 border-gray-200">
+                        <h3 class="text-base font-semibold text-gray-700">Detalhes Adicionais</h3>
+                    <div>
+                        <label for="monster-hpMax" class="block text-xs font-medium text-gray-700">HP Máx:</label>
+                        <input type="number" id="monster-hpMax" name="hpMax" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required readonly>
+                    </div>
+                    <div>
+                        <label for="monster-mana" class="block text-xs font-medium text-gray-700">Mana:</label>
+                        <input type="number" id="monster-mana" name="mana" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+                    </div>
+                    <div>
+                        <label for="monster-manaMax" class="block text-xs font-medium text-gray-700">Mana Máx:</label>
+                        <input type="number" id="monster-manaMax" name="manaMax" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+                    </div>
+                    <div>
+                        <label for="monster-element" class="block text-xs font-medium text-gray-700">Elemento:</label>
+                        <input type="text" id="monster-element" name="element" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+                    </div>
+                        <div>
+                        <label for="monster-delayAttack" class="block text-xs font-medium text-gray-700">Delay Ataque:</label>
+                        <input type="number" id="monster-delayAttack" name="delayAttack" step="0.1" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+                    </div>
+                        <div>
+                        <label for="monster-cooldownAttack" class="block text-xs font-medium text-gray-700">Cooldown Ataque:</label>
+                        <input type="number" id="monster-cooldownAttack" name="cooldownAttack" step="0.1" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+                    </div>
+                        <div>
+                        <label for="monster-attackCountMax" class="block text-xs font-medium text-gray-700">Ataque Count Máx:</label>
+                        <input type="number" id="monster-attackCountMax" name="attackCountMax" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+                    </div>
+                        <div>
+                        <label for="monster-dyingTime" class="block text-xs font-medium text-gray-700">Tempo Morrendo (ms):</label>
+                        <input type="number" id="monster-dyingTime" name="dyingTime" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+                    </div>
+                        <div>
+                        <label for="monster-yCustomOffset" class="block text-xs font-medium text-gray-700">Offset Y Custom:</label>
+                        <input type="number" id="monster-yCustomOffset" name="yCustomOffset" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+                    </div>
+                        <div>
+                        <label for="monster-delayTakeHit" class="block text-xs font-medium text-gray-700">Delay Take Hit:</label>
+                        <input type="number" id="monster-delayTakeHit" name="delayTakeHit" step="0.1" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+                    </div>
+                        <div>
+                        <label for="monster-hitboxCustomOffsetY" class="block text-xs font-medium text-gray-700">Hitbox Offset Y Custom:</label>
+                        <input type="number" id="monster-hitboxCustomOffsetY" name="hitboxCustomOffsetY" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+                    </div>
+
+                    <div class="col-span-full">
+                        <h4 class="text-base font-semibold mt-2 mb-1 text-gray-700">Configuração de Sprite (spriteConfig)</h4>
+                        <div id="sprite-config-container" class="space-y-3">
+                            </div>
+                        <button type="button" id="add-animation-btn" class="mt-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-1 px-2 rounded-md text-xs transition duration-300 ease-in-out">
+                            Adicionar Animação Manualmente
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
-
-    <div class="form-scroll-container">
-            <form id="monster-form" class="grid grid-cols-1 gap-3">
-            <div>
-                <label for="monster-id" class="block text-xs font-medium text-gray-700">ID:</label>
-                <input type="number" id="monster-id" name="id" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" readonly>
-            </div>
-            <div>
-                <label for="monster-name" class="block text-xs font-medium text-gray-700">Nome:</label>
-                <input type="text" id="monster-name" name="name" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
-            </div>
-                <div>
-                <label for="sprite-folder-name" class="block text-xs font-medium text-gray-700">Nome da Pasta da Sprite:</label>
-                <input type="text" id="sprite-folder-name" name="spriteFolderName" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
-            </div>
-            <div>
-                <label for="monster-level" class="block text-xs font-medium text-gray-700">Nível:</label>
-                <input type="number" id="monster-level" name="level" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
-            </div>
-            <div>
-                <label for="monster-hp" class="block text-xs font-medium text-gray-700">HP:</label>
-                <input type="number" id="monster-hp" name="hp" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
-            </div>
-            <div>
-                <label for="monster-damage" class="block text-xs font-medium text-gray-700">Dano:</label>
-                <input type="number" id="monster-damage" name="damage" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
-            </div>
-                <div>
-                <label for="monster-size" class="block text-xs font-medium text-gray-700">Tamanho (Size):</label>
-                <input type="number" id="monster-size" name="size" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
-            </div>
-            <div>
-                <label for="monster-speed" class="block text-xs font-medium text-gray-700">Velocidade:</label>
-                <input type="number" id="monster-speed" name="speed" step="0.1" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
-            </div>
-                <div>
-                <label for="monster-expReward" class="block text-xs font-medium text-gray-700">Recompensa EXP:</label>
-                <input type="number" id="monster-expReward" name="expReward" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
-            </div>
-                <div>
-                <label for="monster-description" class="block text-xs font-medium text-gray-700">Descrição:</label>
-                <textarea id="monster-description" name="description" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" rows="2"></textarea>
-            </div>
-
-
-            <div id="additional-fields" class="space-y-3 border-t pt-3 mt-3 border-gray-200">
-                    <h3 class="text-base font-semibold text-gray-700">Detalhes Adicionais</h3>
-                <div>
-                    <label for="monster-hpMax" class="block text-xs font-medium text-gray-700">HP Máx:</label>
-                    <input type="number" id="monster-hpMax" name="hpMax" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required readonly>
-                </div>
-                <div>
-                    <label for="monster-mana" class="block text-xs font-medium text-gray-700">Mana:</label>
-                    <input type="number" id="monster-mana" name="mana" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
-                </div>
-                <div>
-                    <label for="monster-manaMax" class="block text-xs font-medium text-gray-700">Mana Máx:</label>
-                    <input type="number" id="monster-manaMax" name="manaMax" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
-                </div>
-                <div>
-                    <label for="monster-element" class="block text-xs font-medium text-gray-700">Elemento:</label>
-                    <input type="text" id="monster-element" name="element" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
-                </div>
-                    <div>
-                    <label for="monster-delayAttack" class="block text-xs font-medium text-gray-700">Delay Ataque:</label>
-                    <input type="number" id="monster-delayAttack" name="delayAttack" step="0.1" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
-                </div>
-                    <div>
-                    <label for="monster-cooldownAttack" class="block text-xs font-medium text-gray-700">Cooldown Ataque:</label>
-                    <input type="number" id="monster-cooldownAttack" name="cooldownAttack" step="0.1" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
-                </div>
-                    <div>
-                    <label for="monster-attackCountMax" class="block text-xs font-medium text-gray-700">Ataque Count Máx:</label>
-                    <input type="number" id="monster-attackCountMax" name="attackCountMax" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
-                </div>
-                    <div>
-                    <label for="monster-dyingTime" class="block text-xs font-medium text-gray-700">Tempo Morrendo (ms):</label>
-                    <input type="number" id="monster-dyingTime" name="dyingTime" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
-                </div>
-                    <div>
-                    <label for="monster-yCustomOffset" class="block text-xs font-medium text-gray-700">Offset Y Custom:</label>
-                    <input type="number" id="monster-yCustomOffset" name="yCustomOffset" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
-                </div>
-                    <div>
-                    <label for="monster-delayTakeHit" class="block text-xs font-medium text-gray-700">Delay Take Hit:</label>
-                    <input type="number" id="monster-delayTakeHit" name="delayTakeHit" step="0.1" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
-                </div>
-                    <div>
-                    <label for="monster-hitboxCustomOffsetY" class="block text-xs font-medium text-gray-700">Hitbox Offset Y Custom:</label>
-                    <input type="number" id="monster-hitboxCustomOffsetY" name="hitboxCustomOffsetY" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
-                </div>
-
-                <div class="col-span-full">
-                    <h4 class="text-base font-semibold mt-2 mb-1 text-gray-700">Configuração de Sprite (spriteConfig)</h4>
-                    <div id="sprite-config-container" class="space-y-3">
-                        </div>
-                    <button type="button" id="add-animation-btn" class="mt-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-1 px-2 rounded-md text-xs transition duration-300 ease-in-out">
-                        Adicionar Animação Manualmente
-                    </button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
 </div>

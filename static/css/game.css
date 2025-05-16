@@ -64,3 +64,9 @@
     border-radius: 10px;
     background-color: white;
 }
+.admin-toolbar.minimized {
+    max-height: 50px;
+}
+.admin-toolbar #hide-toolbar-btn {
+    margin: auto 0;
+}

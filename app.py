@@ -38,13 +38,27 @@ async def modal_configuration(request: Request):
     )
 
 @app.get("/monsters", response_class=JSONResponse)
-async def monsters(request: Request):
+async def get_monsters(request: Request):
     data = open('static/data/monsters.json', 'r').read()
     data = json.loads(data)
     return data
 
+@app.post("/monsters", response_class=JSONResponse)
+async def add_monster(request: Request):
+    new_enemy = await request.json()
+    
+    data = open('static/data/monsters.json', 'r').read()
+    data = json.loads(data)
+
+    new_enemy['id'] = len(data['monsters']) + 1
+    data['monsters'].append(new_enemy)
+
+    with open('static/data/monsters.json', 'w') as f:
+        json.dump(data, f)
+    return data
+
 @app.put("/monsters/{monster_id}", response_class=JSONResponse)
-async def monsters(request: Request, monster_id: int):
+async def update_monster(request: Request, monster_id: int):
     enemy_updated = await request.json()
 
     data = open('static/data/monsters.json', 'r').read()

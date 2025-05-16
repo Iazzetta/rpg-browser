@@ -1,5 +1,5 @@
 // Array para armazenar os monstros (será carregado do localStorage ou de MONSTERS)
-let monsters = [];
+// let monsters = [];
 let editingMonsterId = null; // Para controlar qual monstro está sendo editado
 
 // Elementos do DOM
@@ -56,24 +56,39 @@ const defaultValues = {
     description: '' // Novo campo de descrição
 };
 
+async function addNewMonsterDb(monsterData) {
+    const r = await fetch('/monsters', {
+        method: 'POST',
+        body: JSON.stringify(monsterData)
+    })
+    const data = await r.json()
+    window.MONSTERS = data.monsters
 
+}
 // Função para salvar os monstros no localStorage
-function saveMonsters() {
-    localStorage.setItem('monsters', JSON.stringify(monsters));
+async function saveMonsters() {
+    // localStorage.setItem('monsters', JSON.stringify(monsters));
+    const r = await fetch('/monsters', {
+        method: 'POST',
+        body: JSON.stringify(monsters)
+    })
+    const data = await r.json()
+    console.log(data)
+    window.MONSTERS = data.monsters
 }
 
 // Função para carregar os monstros do localStorage ou da variável global MONSTERS
 async function loadMonsters() {
     const r = await fetch('/monsters')
     const data = await r.json()
-    monsters = data.monsters
+    window.MONSTERS = data.monsters
     populateMonsterSelect(); // Preenche o seletor após carregar
 }
 
 // Função para popular o dropdown de seleção de monstros
 function populateMonsterSelect() {
     monsterSelect.innerHTML = '<option value="">-- Criar Novo Monstro --</option>'; // Opção para criar novo
-    monsters.forEach(monster => {
+    window.MONSTERS.forEach(monster => {
         const option = document.createElement('option');
         option.value = monster.id;
         option.textContent = `${monster.id}: ${monster.name}`;
@@ -177,7 +192,7 @@ function fillForm(monster) {
 function updateSpritePreview(animationName) {
     const monsterId = document.getElementById('monster-id').value;
     // Ao editar, pegamos o monstro do array; ao adicionar, construímos a config a partir dos campos do form
-    const currentMonster = editingMonsterId !== null ? monsters.find(m => m.id === parseInt(monsterId)) : getMonsterDataFromForm();
+    const currentMonster = editingMonsterId !== null ? window.MONSTERS.find(m => m.id === parseInt(monsterId)) : getMonsterDataFromForm();
 
     if (!currentMonster || !currentMonster.spriteConfig || !currentMonster.spriteConfig[animationName]) {
         spritePreviewDiv.style.backgroundImage = '';
@@ -436,7 +451,7 @@ function clearForm() {
     spriteFolderNameInput.addEventListener('input', async () => await autoFillStandardSpriteConfig());
     monsterSizeInput.addEventListener('input', async () => await autoFillStandardSpriteConfig());
 
-        triggerMonsterUpdateEvent(); // Dispara evento de atualização (com dados vazios)
+    triggerMonsterUpdateEvent(); // Dispara evento de atualização (com dados vazios)
 }
 
     // Função para coletar dados do monstro a partir do formulário
@@ -504,6 +519,7 @@ const updateMonsterDb = async (enemy) => {
     })
     const data = await r.json()
     console.log('atualizou?', data)
+    window.MONSTERS = data.monsters
 }
 
 // Função para disparar o evento de atualização do monstro
@@ -545,7 +561,7 @@ monsterSelect.addEventListener('change', (event) => {
         additionalFieldsDiv.classList.remove('hidden');
     } else {
         // Selecionou um monstro existente
-        const monsterToEdit = monsters.find(monster => monster.id === parseInt(selectedId));
+        const monsterToEdit = window.MONSTERS.find(monster => monster.id === parseInt(selectedId));
         if (monsterToEdit) {
             fillForm(monsterToEdit);
                 // Remove listeners de auto-preenchimento ao editar
@@ -556,19 +572,19 @@ monsterSelect.addEventListener('change', (event) => {
 });
 
 // Botão Clonar Monstro
-cloneMonsterBtn.addEventListener('click', () => {
+cloneMonsterBtn.addEventListener('click', async () => {
     if (editingMonsterId !== null) {
-        const monsterToClone = monsters.find(monster => monster.id === editingMonsterId);
+        const monsterToClone = window.MONSTERS.find(monster => monster.id === editingMonsterId);
         if (monsterToClone) {
             // Cria uma cópia profunda do monstro
             const clonedMonster = JSON.parse(JSON.stringify(monsterToClone));
             // Gera um novo ID
-            const newId = monsters.length > 0 ? Math.max(...monsters.map(m => m.id)) + 1 : 1;
+            const newId = window.MONSTERS.length > 0 ? Math.max(...window.MONSTERS.map(m => m.id)) + 1 : 1;
             clonedMonster.id = newId;
             clonedMonster.name = `Cópia de ${clonedMonster.name}`; // Adiciona "Cópia de" ao nome
 
-            monsters.push(clonedMonster);
-            saveMonsters();
+            await addNewMonsterDb(clonedMonster);
+            // saveMonsters();
             renderMonsterList(); // Atualiza o seletor
 
             // Seleciona o monstro clonado no dropdown e preenche o formulário
@@ -621,29 +637,30 @@ monsterHpInput.addEventListener('input', async () => {
 
 
 // Submissão do Formulário
-monsterForm.addEventListener('submit', (event) => {
+monsterForm.addEventListener('submit', async (event) => {
     event.preventDefault(); // Previne o recarregamento da página
 
     const monsterData = getMonsterDataFromForm();
 
     if (editingMonsterId !== null) {
         // Atualiza um monstro existente
-        const index = monsters.findIndex(m => m.id === editingMonsterId);
+        const index = window.MONSTERS.findIndex(m => m.id === editingMonsterId);
         if (index !== -1) {
             // Mantém o ID original e atualiza os outros campos
-            monsters[index] = { ...monsters[index], ...monsterData, id: editingMonsterId };
+            window.MONSTERS[index] = { ...window.MONSTERS[index], ...monsterData, id: editingMonsterId };
             console.log(`Monstro com ID ${editingMonsterId} atualizado.`);
+            await updateMonsterDb(window.MONSTERS[index])
         }
     } else {
         // Adiciona um novo monstro
         // Gera um ID automático: maior ID existente + 1
-        const newId = monsters.length > 0 ? Math.max(...monsters.map(m => m.id)) + 1 : 1;
+        const newId = window.MONSTERS.length > 0 ? Math.max(...window.MONSTERS.map(m => m.id)) + 1 : 1;
         monsterData.id = newId;
-        monsters.push(monsterData);
-            console.log(`Novo monstro adicionado com ID ${newId}.`);
+        await addNewMonsterDb(monsterData);
+        console.log(`Novo monstro adicionado com ID ${newId}.`);
     }
 
-    saveMonsters(); // Salva no localStorage
+    // saveMonsters(); // Salva no localStorage
     renderMonsterList(); // Atualiza o seletor
     clearForm(); // Limpa o formulário
     monsterSelect.value = ""; // Reseta o seletor para "Criar Novo"
@@ -652,8 +669,8 @@ monsterForm.addEventListener('submit', (event) => {
 // Função para deletar um monstro
 deleteMonsterBtn.addEventListener('click', () => {
         if (editingMonsterId !== null && confirm(`Tem certeza que deseja deletar o monstro com ID ${editingMonsterId}?`)) {
-        monsters = monsters.filter(monster => monster.id !== editingMonsterId);
-        saveMonsters(); // Salva no localStorage após deletar
+        window.MONSTERS = window.MONSTERS.filter(monster => monster.id !== editingMonsterId);
+        // saveMonsters(); // Salva no localStorage após deletar
         renderMonsterList(); // Atualiza o seletor
         clearForm(); // Limpa o formulário
         monsterSelect.value = ""; // Reseta o seletor para "Criar Novo"
@@ -662,7 +679,6 @@ deleteMonsterBtn.addEventListener('click', () => {
 });
 
 spawnMonsterBtn.addEventListener('click', () => {
-    console.log('spawnMonsterBtn')
     if (editingMonsterId !== null) {
         const enemy = getCurrentMonsterById(editingMonsterId);
         enemy.x = randInt((window.innerWidth / 2) + enemy.size, window.innerWidth - enemy.size)
@@ -687,6 +703,10 @@ exportMonstersBtn.addEventListener('click', () => {
     URL.revokeObjectURL(url); // Limpa o URL do objeto
         console.log("Monstros exportados para monsters.json");
 });
+
+document.querySelector('#hide-toolbar-btn').addEventListener('click', () => {
+    document.querySelector('.admin-toolbar').classList.toggle('minimized')
+})
 
 // Inicializa: carrega do localStorage/MONSTERS e popula o seletor
 loadMonsters();
