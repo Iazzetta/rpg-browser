@@ -28,3 +28,4 @@ class EntityDto(BaseModel):
     hitboxYOffset: int
     hitboxX: int
     hitboxY: int
+    scale: int

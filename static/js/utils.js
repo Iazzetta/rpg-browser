@@ -1,6 +1,5 @@
 
 const FLOOR = 210;
-const ENTITY_SCALE = 2;
 const GRAVITY_FORCE = 15;
 const HITBOX_DEBUG = true;
 let SOUND_VOLUME = 0.5;
@@ -90,6 +89,23 @@ window.loadStats = () => {
   statsHp.innerText = window.player.hpMax
   statsAttackSpeed.innerText = window.player.stats.calcTotalAttackSpeed(window.player.delayAttack)
   statsCriticalChange.innerText = window.player.stats.calcTotalCriticalChange()
+
+  // add update stats events
+  document.querySelectorAll('.btn-update-stats-increment:not(.loaded)').forEach((btn) => {
+    btn.classList.add('loaded')
+    btn.addEventListener('click', () => {
+      if (window.player.stats_points > 0) {
+        window.player.stats_points -= 1;
+        const datakey = btn.getAttribute('data-key');
+        window.player.stats.incrementPoints(datakey);
+        if (datakey === 'constitution') {
+          window.player.hpMax = window.player.stats.calcTotalHealth(window.player.hpMax);
+        }
+        window.loadStats();
+      }
+    })
+  })
+  
 }
 
 

@@ -21,4 +21,9 @@ class Stats {
     calcTotalCriticalChange() {
         return this.dexterity;
     }
+
+    incrementPoints(key) {
+        this[key] += 1;
+    }
+
 }

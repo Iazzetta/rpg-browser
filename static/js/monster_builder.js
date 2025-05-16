@@ -18,6 +18,7 @@ const exportMonstersBtn = document.getElementById('export-monsters-btn');
 const spriteFolderNameInput = document.getElementById('sprite-folder-name');
 const monsterSizeInput = document.getElementById('monster-size');
 const monsterHpInput = document.getElementById('monster-hp');
+const monsterScaleInput = document.getElementById('monster-scale');
 const monsterHpMaxInput = document.getElementById('monster-hpMax');
 const additionalFieldsDiv = document.getElementById('additional-fields');
 
@@ -53,6 +54,7 @@ const defaultValues = {
     yCustomOffset: -20,
     delayTakeHit: 0.3,
     hitboxCustomOffsetY: 10,
+    scale: 2,
     description: '' // Novo campo de descrição
 };
 
@@ -145,6 +147,7 @@ function fillForm(monster) {
     document.getElementById('monster-dyingTime').value = monster.dyingTime || defaultValues.dyingTime;
     document.getElementById('monster-yCustomOffset').value = monster.yCustomOffset || defaultValues.yCustomOffset;
     document.getElementById('monster-delayTakeHit').value = monster.delayTakeHit || defaultValues.delayTakeHit;
+    document.getElementById('monster-scale').value = monster.scale || defaultValues.scale;
     document.getElementById('monster-hitboxCustomOffsetY').value = monster.hitboxCustomOffsetY || defaultValues.hitboxCustomOffsetY;
     document.getElementById('monster-expReward').value = monster.expReward;
     document.getElementById('monster-description').value = monster.description || defaultValues.description; // Preenche descrição
@@ -466,13 +469,13 @@ function getMonsterDataFromForm() {
             // Ignora os campos de animação individuais aqui
             if (!key.startsWith('animation')) {
                 // Converte para número onde apropriado, usa valor padrão se vazio para campos não essenciais
-            if (['level', 'hp', 'damage', 'size', 'speed', 'expReward'].includes(key)) {
-                    monsterData[key] = parseFloat(value) || 0;
-            } else if (['mana', 'manaMax', 'delayAttack', 'cooldownAttack', 'attackCountMax', 'dyingTime', 'yCustomOffset', 'delayTakeHit', 'hitboxCustomOffsetY'].includes(key)) {
-                    monsterData[key] = parseFloat(value) || defaultValues[key];
-            }
-            else {
-                    monsterData[key] = value;
+                if (['level', 'hp', 'damage', 'size', 'speed', 'expReward'].includes(key)) {
+                        monsterData[key] = parseFloat(value) || 0;
+                } else if (['mana', 'manaMax', 'delayAttack', 'cooldownAttack', 'attackCountMax', 'dyingTime', 'yCustomOffset', 'delayTakeHit', 'hitboxCustomOffsetY', 'scale'].includes(key)) {
+                        monsterData[key] = parseFloat(value) || defaultValues[key];
+                }
+                else {
+                        monsterData[key] = value;
             }
             }
         }
@@ -533,7 +536,6 @@ async function triggerMonsterUpdateEvent() {
             console.log(window.enemies[i].id, currentMonsterData.id, window.enemies[i].id == Number(currentMonsterData.id));
             if (window.enemies[i].id == Number(currentMonsterData.id)) {
                 for (const [key, value] of Object.entries(currentMonsterData)) {
-
                     if (['name', 'spriteFolderName', 'element', 'spriteConfig'].includes(key)) {
                         window.enemies[i][key] = value;
                     } else {
@@ -600,13 +602,13 @@ cloneMonsterBtn.addEventListener('click', async () => {
 // Botão Adicionar Animação (dentro do formulário)
 addAnimationBtn.addEventListener('click', async() => {
     addAnimationFields(); // Adiciona um novo conjunto de campos de animação vazios
-        await triggerMonsterUpdateEvent(); // Dispara evento de atualização
+    await triggerMonsterUpdateEvent(); // Dispara evento de atualização
 });
 
 // Listener para o seletor de animação na prévia
 animationSelector.addEventListener('change', async (event) => {
     updateSpritePreview(event.target.value);
-        await triggerMonsterUpdateEvent(); // Dispara evento de atualização
+    await triggerMonsterUpdateEvent(); // Dispara evento de atualização
 });
 
 // Listeners para auto-preencher a configuração de sprite (apenas ao criar novo)
@@ -619,21 +621,26 @@ monsterHpInput.addEventListener('input', async () => {
         await triggerMonsterUpdateEvent(); // Dispara evento de atualização
 });
 
-    // Listener para disparar o evento de atualização para outros campos essenciais
-    const essentialInputs = monsterForm.querySelectorAll('#monster-name, #sprite-folder-name, #monster-level, #monster-damage, #monster-size, #monster-speed, #monster-expReward, #monster-description');
-    essentialInputs.forEach(input => {
-        input.addEventListener('input', async () => {
-            await triggerMonsterUpdateEvent(); // Dispara evento de atualização
-        });
-    });
+// trigger scale
+monsterScaleInput.addEventListener('input', async () => {
+    await triggerMonsterUpdateEvent(); // Dispara evento de atualização
+});
 
-    // Listener para disparar o evento de atualização para campos adicionais
-    const additionalInputs = additionalFieldsDiv.querySelectorAll('input, textarea');
-    additionalInputs.forEach(input => {
-        input.addEventListener('input', async () => {
-            await triggerMonsterUpdateEvent(); // Dispara evento de atualização
-        });
+// Listener para disparar o evento de atualização para outros campos essenciais
+const essentialInputs = monsterForm.querySelectorAll('#monster-name, #sprite-folder-name, #monster-level, #monster-damage, #monster-size, #monster-speed, #monster-expReward, #monster-description');
+essentialInputs.forEach(input => {
+    input.addEventListener('input', async () => {
+        await triggerMonsterUpdateEvent(); // Dispara evento de atualização
     });
+});
+
+// Listener para disparar o evento de atualização para campos adicionais
+const additionalInputs = additionalFieldsDiv.querySelectorAll('input, textarea');
+additionalInputs.forEach(input => {
+    input.addEventListener('input', async () => {
+        await triggerMonsterUpdateEvent(); // Dispara evento de atualização
+    });
+});
 
 
 // Submissão do Formulário

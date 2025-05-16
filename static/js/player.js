@@ -137,6 +137,7 @@ class Player extends Entity {
             this.level++;
             this.exp = 0;
             this.expMax = this.expMax * 2;
+            this.stats_points += 2;
         }
     }
 
@@ -162,11 +163,11 @@ class Player extends Entity {
 
             if (key === 'a') {
                 this.keyboard.left = true;
-                this.$element.style.transform = `scale(-${ENTITY_SCALE}, ${ENTITY_SCALE})`;
+                this.$element.style.transform = `scale(-${this.scale}, ${this.scale})`;
             }
             if (key === 'd') {
                 this.keyboard.right = true;
-                this.$element.style.transform = `scale(${ENTITY_SCALE}, ${ENTITY_SCALE})`;
+                this.$element.style.transform = `scale(${this.scale}, ${this.scale})`;
             }
             if (key === ' ') {
                 this.keyboard.jump = true;

@@ -72,8 +72,7 @@ async def update_monster(request: Request, monster_id: int):
     for m in data['monsters']:
         if m['id'] == monster_id:
             for key, value in enemy_updated.items():
-                if key in m:
-                    m[key] = value
+                m[key] = value
 
     with open('static/data/monsters.json', 'w') as f:
         json.dump(data, f)

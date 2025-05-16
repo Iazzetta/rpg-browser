@@ -27,6 +27,7 @@ class Entity {
         this.delayAttack = data.delayAttack;
         this.dyingTime = data.dyingTime;
         this.delayTakeHit = data.delayTakeHit;
+        this.scale = data.scale || 2;
         this.spriteManager = new SpriteManager(this.$element, data.spriteConfig)
         this.attackCount = 1;
         this.isAttacking = false;

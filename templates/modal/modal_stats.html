@@ -9,9 +9,8 @@
         <div class="flex justify-between">
             <p class="mb-2 font-bold">Força</p>
             <div class="update-stats flex justify-between w-[50px] items-center">
-                <button class="btn-update-stats">+</button>
                 <div class="update-stats-value" id="strength-value">0</div>
-                <button class="btn-update-stats">-</button>
+                <button class="btn-update-stats-increment"  data-key="strength">+</button>
             </div>
         </div>
         <div class="">
@@ -20,9 +19,8 @@
         <div class="flex justify-between">
             <p class="mb-2 font-bold">Constituição</p>
             <div class="update-stats flex justify-between w-[50px] items-center">
-                <button class="btn-update-stats">+</button>
                 <div class="update-stats-value" id="constitution-value">0</div>
-                <button class="btn-update-stats">-</button>
+                <button class="btn-update-stats-increment" data-key="constitution">+</button>
             </div>
         </div>
         <div class="">    
@@ -31,9 +29,8 @@
         <div class="flex justify-between">
             <p class="mb-2 font-bold">Destreza</p>
             <div class="update-stats flex justify-between w-[50px] items-center">
-                <button class="btn-update-stats">+</button>
                 <div class="update-stats-value" id="dexterity-value">0</div>
-                <button class="btn-update-stats">-</button>
+                <button class="btn-update-stats-increment" data-key="dexterity">+</button>
             </div>
         </div>
         <div class="">
@@ -47,6 +44,5 @@
 {% endblock %}
 
 {% block modal_actions %}
-    <button class="modal__save btn-sm btn-green-500" id="btn-save-stats">Salvar</button>
-    <button class="modal__close btn-sm btn-red-500">Cancelar</button>
+
 {% endblock %}

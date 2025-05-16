@@ -31,17 +31,21 @@ class Enemy extends Entity{
 
         if (this.hitboxX >= (window.player.hitboxX + window.player.hitboxWidth)) {
             this.x -= this.speed;
-            this.$element.style.transform = `scale(-${ENTITY_SCALE}, ${ENTITY_SCALE})`;
-            document.querySelector('.enemy-panel').style.transform = `scale(-1, 1)`;
             this.directionEnemy = 'left';
             this.spriteManager.setState('run');
         }
         else if ((this.hitboxX + this.hitboxWidth) <= window.player.hitboxX) {
             this.x += this.speed;
-            this.$element.style.transform = `scale(${ENTITY_SCALE}, ${ENTITY_SCALE})`;
-            document.querySelector('.enemy-panel').style.transform = `scale(1, 1)`;
             this.directionEnemy = 'right';
             this.spriteManager.setState('run');
+        }
+
+        if (this.directionEnemy === 'left') {
+            this.$element.style.transform = `scale(-${this.scale}, ${this.scale})`;
+            document.querySelector('.enemy-panel').style.transform = `scale(-1, 1)`;
+        } else if (this.directionEnemy === 'right') {
+            document.querySelector('.enemy-panel').style.transform = `scale(1, 1)`;
+            this.$element.style.transform = `scale(${this.scale}, ${this.scale})`;
         }
 
         if (!this.isAttacking && calculateDistance(this.hitboxX, this.hitboxY, window.player.hitboxX, window.player.hitboxY) <=  window.player.hitboxWidth) {
