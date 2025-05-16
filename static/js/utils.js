@@ -2,7 +2,7 @@
 const FLOOR = 210;
 const ENTITY_SCALE = 2;
 const GRAVITY_FORCE = 15;
-const HITBOX_DEBUG = false;
+const HITBOX_DEBUG = true;
 let SOUND_VOLUME = 0.5;
 
 // document.addEventListener('contextmenu', event => event.preventDefault());
@@ -12,12 +12,12 @@ createjs.Sound.volume = SOUND_VOLUME;
 let currentMonster = 0;
 
 const getCurrentMonster = () => {
-    const monster = superCopy(MONSTERS[currentMonster]);
+    const monster = superCopy(window.MONSTERS[currentMonster]);
     return new Enemy(monster);
 }
 
 const getCurrentMonsterById = (id) => {
-  for (const monster of MONSTERS) {
+  for (const monster of window.MONSTERS) {
     if (monster.id === id) {
       return superCopy(monster);
     }

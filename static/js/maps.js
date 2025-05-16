@@ -5,12 +5,7 @@ const Maps = [
     "slug": "welcome",
     "background": "static/img/backgrounds/summers/summer1.png",
     "floor": "green",
-    "enemies": [
-      {
-        "enemy_id": 5,
-        "amount": 1
-      }
-    ]
+    "enemies": []
   },
   {
     "id": 2,
@@ -47,6 +42,19 @@ const Maps = [
     "enemies": [
       {
         "enemy_id": 4,
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Forest 4",
+    "slug": "forest4",
+    "background": "static/img/backgrounds/summers/summer5.png",
+    "floor": "green",
+    "enemies": [
+      {
+        "enemy_id": 5,
         "amount": 1
       }
     ]

@@ -1,780 +1,178 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Criador de Monstros</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Estilo para a animação da sprite */
-        .sprite-preview {
-            background-repeat: no-repeat;
-            /* A animação será controlada via JavaScript */
-        }
-    </style>
-</head>
-<body class="bg-gray-100 p-6 font-sans">
 
-    <div class="container mx-auto bg-white p-8 rounded-lg shadow-lg">
-        <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Criador de Monstros</h1>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+/* Estilo para a animação da sprite */
+.sprite-preview {
+    background-repeat: no-repeat;
+    /* A animação será controlada via JavaScript */
+}
 
-        <div class="mb-6 flex justify-center space-x-4">
-            <button id="add-monster-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out">
-                Adicionar Novo Monstro
-            </button>
-            <button id="export-monsters-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out">
-                Exportar Monstros (JSON)
-            </button>
-        </div>
+/* Estilo para tornar a prévia e os botões fixos ao scrollar o formulário */
+.sticky-top {
+    position: sticky;
+    top: 0;
+    z-index: 10; /* Garante que fique acima do conteúdo scrollável */
+    background-color: #f9fafb; /* Cor de fundo para não ser transparente */
+    padding-bottom: 1rem; /* Espaço abaixo da prévia */
+}
 
-        <div id="monster-form-section" class="hidden bg-gray-50 p-6 rounded-md mb-8">
-            <h2 id="form-title" class="text-2xl font-semibold mb-4 text-gray-700">Adicionar Novo Monstro</h2>
+    .sticky-bottom {
+    position: sticky;
+    bottom: 0;
+    z-index: 10; /* Garante que fique acima do conteúdo scrollável */
+    background-color: #f9fafb; /* Cor de fundo para não ser transparente */
+    padding-top: 1rem; /* Espaço acima dos botões */
+}
 
-            <div class="mb-6 flex flex-col items-center">
-                <h3 class="text-xl font-medium mb-2 text-gray-700">Prévia da Sprite</h3>
-                <div id="sprite-preview" class="sprite-preview border border-gray-300 rounded-md" style="width: 90px; height: 90px;">
-                    </div>
-                <select id="animation-selector" class="mt-2 p-2 border rounded-md">
-                    </select>
+/* Estilo para o container do formulário que permite scroll */
+.form-scroll-container {
+    max-height: calc(100vh - 250px); /* Ajuste conforme necessário para caber na tela */
+    margin-bottom: 120px; /* Espaço para os botões fixos no final */
+}
+</style>
+
+<div class="p-2">
+<h1 class="text-xl font-bold mb-4 text-center text-gray-800">Criador de Monstros</h1>
+
+<div class="mb-4">
+    <label for="monster-select" class="block text-sm font-medium text-gray-700 mb-1">Selecionar Monstro:</label>
+    <select id="monster-select" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+        <option value="">-- Criar Novo Monstro --</option>
+        </select>
+</div>
+
+<div class="mb-4 flex justify-center space-x-2">
+        <button id="clone-monster-btn" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-1 px-3 rounded-md text-xs transition duration-300 ease-in-out" disabled>
+        Clonar Monstro
+    </button>
+    <button id="export-monsters-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded-md text-xs transition duration-300 ease-in-out">
+        Exportar Monstros (JSON)
+    </button>
+</div>
+
+<div id="monster-form-section" class="bg-gray-50 p-4 rounded-md">
+    <h2 id="form-title" class="text-lg font-semibold mb-3 text-gray-700">Criar Novo Monstro</h2>
+
+    <div class="sticky-top flex flex-col items-center mb-4">
+        <h3 class="text-base font-medium mb-1 text-gray-700">Prévia da Sprite</h3>
+        <div id="sprite-preview" class="sprite-preview border border-gray-300 rounded-md" style="width: 90px; height: 90px;">
             </div>
-
-
-            <form id="monster-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="col-span-1">
-                    <label for="monster-id" class="block text-sm font-medium text-gray-700">ID:</label>
-                    <input type="number" id="monster-id" name="id" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" readonly>
-                </div>
-                <div class="col-span-1">
-                    <label for="monster-name" class="block text-sm font-medium text-gray-700">Nome:</label>
-                    <input type="text" id="monster-name" name="name" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
-                </div>
-                 <div class="col-span-1">
-                    <label for="sprite-folder-name" class="block text-sm font-medium text-gray-700">Nome da Pasta da Sprite:</label>
-                    <input type="text" id="sprite-folder-name" name="spriteFolderName" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
-                </div>
-                <div class="col-span-1">
-                    <label for="monster-level" class="block text-sm font-medium text-gray-700">Nível:</label>
-                    <input type="number" id="monster-level" name="level" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
-                </div>
-                <div class="col-span-1">
-                    <label for="monster-hp" class="block text-sm font-medium text-gray-700">HP:</label>
-                    <input type="number" id="monster-hp" name="hp" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
-                </div>
-                <div class="col-span-1">
-                    <label for="monster-hpMax" class="block text-sm font-medium text-gray-700">HP Máx:</label>
-                    <input type="number" id="monster-hpMax" name="hpMax" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
-                </div>
-                <div class="col-span-1">
-                    <label for="monster-mana" class="block text-sm font-medium text-gray-700">Mana:</label>
-                    <input type="number" id="monster-mana" name="mana" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
-                </div>
-                <div class="col-span-1">
-                    <label for="monster-manaMax" class="block text-sm font-medium text-gray-700">Mana Máx:</label>
-                    <input type="number" id="monster-manaMax" name="manaMax" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
-                </div>
-                <div class="col-span-1">
-                    <label for="monster-damage" class="block text-sm font-medium text-gray-700">Dano:</label>
-                    <input type="number" id="monster-damage" name="damage" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
-                </div>
-                 <div class="col-span-1">
-                    <label for="monster-size" class="block text-sm font-medium text-gray-700">Tamanho (Size):</label>
-                    <input type="number" id="monster-size" name="size" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
-                </div>
-                <div class="col-span-1">
-                    <label for="monster-speed" class="block text-sm font-medium text-gray-700">Velocidade:</label>
-                    <input type="number" id="monster-speed" name="speed" step="0.1" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
-                </div>
-                <div class="col-span-1">
-                    <label for="monster-element" class="block text-sm font-medium text-gray-700">Elemento:</label>
-                    <input type="text" id="monster-element" name="element" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
-                </div>
-                 <div class="col-span-1">
-                    <label for="monster-delayAttack" class="block text-sm font-medium text-gray-700">Delay Ataque:</label>
-                    <input type="number" id="monster-delayAttack" name="delayAttack" step="0.1" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
-                </div>
-                 <div class="col-span-1">
-                    <label for="monster-cooldownAttack" class="block text-sm font-medium text-gray-700">Cooldown Ataque:</label>
-                    <input type="number" id="monster-cooldownAttack" name="cooldownAttack" step="0.1" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
-                </div>
-                 <div class="col-span-1">
-                    <label for="monster-attackCountMax" class="block text-sm font-medium text-gray-700">Ataque Count Máx:</label>
-                    <input type="number" id="monster-attackCountMax" name="attackCountMax" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
-                </div>
-                 <div class="col-span-1">
-                    <label for="monster-dyingTime" class="block text-sm font-medium text-gray-700">Tempo Morrendo (ms):</label>
-                    <input type="number" id="monster-dyingTime" name="dyingTime" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
-                </div>
-                 <div class="col-span-1">
-                    <label for="monster-yCustomOffset" class="block text-sm font-medium text-gray-700">Offset Y Custom:</label>
-                    <input type="number" id="monster-yCustomOffset" name="yCustomOffset" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
-                </div>
-                 <div class="col-span-1">
-                    <label for="monster-delayTakeHit" class="block text-sm font-medium text-gray-700">Delay Take Hit:</label>
-                    <input type="number" id="monster-delayTakeHit" name="delayTakeHit" step="0.1" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
-                </div>
-                 <div class="col-span-1">
-                    <label for="monster-hitboxCustomOffsetY" class="block text-sm font-medium text-gray-700">Hitbox Offset Y Custom:</label>
-                    <input type="number" id="monster-hitboxCustomOffsetY" name="hitboxCustomOffsetY" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
-                </div>
-                 <div class="col-span-1">
-                    <label for="monster-expReward" class="block text-sm font-medium text-gray-700">Recompensa EXP:</label>
-                    <input type="number" id="monster-expReward" name="expReward" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
-                </div>
-
-                <div class="col-span-full">
-                    <h3 class="text-xl font-semibold mt-4 mb-2 text-gray-700">Configuração de Sprite (spriteConfig)</h3>
-                    <div id="sprite-config-container" class="space-y-4">
-                        </div>
-                    <button type="button" id="add-animation-btn" class="mt-4 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out">
-                        Adicionar Animação Manualmente
-                    </button>
-                </div>
-
-                <div class="col-span-full flex justify-end space-x-4 mt-6">
-                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out">
-                        Salvar Monstro
-                    </button>
-                    <button type="button" id="cancel-edit-btn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out">
-                        Cancelar
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <div>
-            <h2 class="text-2xl font-semibold mb-4 text-gray-700">Lista de Monstros</h2>
-            <ul id="monster-list" class="space-y-4">
-                </ul>
+        <select id="animation-selector" class="mt-1 p-1 border rounded-md text-xs">
+            </select>
+        <div class=" space-x-2 mt-4">
+            <button type="button" id="delete-monster-btn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded-md text-xs transition duration-300 ease-in-out" disabled>
+                Excluir Monstro
+            </button>
+            <button type="submit" form="monster-form" class="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded-md text-xs transition duration-300 ease-in-out">
+                Salvar Monstro
+            </button>
+            <button type="button" id="spawn-monster-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded-md text-xs transition duration-300 ease-in-out">
+                Spawn Monstro
+            </button>
         </div>
     </div>
 
-    <script>
-        // Array para armazenar os monstros
-        let monsters = [];
-        let editingMonsterId = null; // Para controlar qual monstro está sendo editado
-
-        // Elementos do DOM
-        const monsterListUl = document.getElementById('monster-list');
-        const monsterFormSection = document.getElementById('monster-form-section');
-        const monsterForm = document.getElementById('monster-form');
-        const addMonsterBtn = document.getElementById('add-monster-btn');
-        const exportMonstersBtn = document.getElementById('export-monsters-btn');
-        const formTitle = document.getElementById('form-title');
-        const spritePreviewDiv = document.getElementById('sprite-preview');
-        const animationSelector = document.getElementById('animation-selector');
-        const spriteConfigContainer = document.getElementById('sprite-config-container');
-        const addAnimationBtn = document.getElementById('add-animation-btn');
-        const cancelEditBtn = document.getElementById('cancel-edit-btn');
-        const spriteFolderNameInput = document.getElementById('sprite-folder-name');
-        const monsterSizeInput = document.getElementById('monster-size');
-
-        // Nomes e arquivos das animações padrão
-        const standardAnimations = {
-            idle: 'idle.png',
-            attack1: 'attack1.png',
-            die: 'death.png', // Nota: 'die' usa 'death.png'
-            takehit: 'takehit.png',
-            run: 'run.png'
-        };
-
-         // Frames padrão para as animações (baseado no exemplo)
-        const standardAnimationFrames = {
-            idle: 9,
-            attack1: 16,
-            die: 8,
-            takehit: 3,
-            run: 9
-        };
-
-
-        // Função para salvar os monstros no localStorage
-        function saveMonsters() {
-            localStorage.setItem('monsters', JSON.stringify(monsters));
-        }
-
-        // Função para carregar os monstros do localStorage
-        function loadMonsters() {
-            const storedMonsters = localStorage.getItem('monsters');
-            if (storedMonsters) {
-                monsters = JSON.parse(storedMonsters);
-            } else {
-                 // Opcional: Adicionar um monstro de exemplo se não houver nada no localStorage
-                 // const exampleMonster = { ... }; // Defina seu monstro de exemplo aqui
-                 // monsters.push(exampleMonster);
-            }
-        }
-
-        // Função para renderizar a lista de monstros
-        function renderMonsterList() {
-            monsterListUl.innerHTML = ''; // Limpa a lista atual
-
-            monsters.forEach(monster => {
-                const listItem = document.createElement('li');
-                listItem.classList.add('bg-gray-100', 'p-4', 'rounded-md', 'shadow-sm', 'flex', 'items-center', 'justify-between');
-
-                const monsterInfo = document.createElement('div');
-                monsterInfo.classList.add('flex', 'items-center');
-
-                // Prévia da sprite na lista
-                const listSpritePreview = document.createElement('div');
-                listSpritePreview.classList.add('sprite-preview', 'mr-4', 'border', 'border-gray-300', 'rounded-md');
-                 // Usa a configuração 'idle' para a prévia na lista, se existir
-                const idleConfig = monster.spriteConfig ? monster.spriteConfig.idle : null;
-                if (idleConfig && idleConfig.src && idleConfig.width && idleConfig.height && idleConfig.frames) {
-                     listSpritePreview.style.width = `${idleConfig.width}px`;
-                     listSpritePreview.style.height = `${idleConfig.height}px`;
-                     listSpritePreview.style.backgroundImage = `url(${idleConfig.src})`;
-                     listSpritePreview.style.backgroundSize = `${idleConfig.width * idleConfig.frames}px ${idleConfig.height}px`; // Define o tamanho total da sprite sheet
-                     listSpritePreview.style.backgroundPositionX = '0px'; // Começa no primeiro frame
-                     listSpritePreview.dataset.frames = idleConfig.frames;
-                     listSpritePreview.dataset.frameWidth = idleConfig.width;
-                      // Inicia a animação para este item da lista
-                     animateSprite(listSpritePreview, idleConfig.frames, idleConfig.width, 150); // 150ms por frame, ajuste conforme necessário
-                } else {
-                     // Define um tamanho padrão se não houver config idle válida
-                    listSpritePreview.style.width = '50px';
-                    listSpritePreview.style.height = '50px';
-                    listSpritePreview.style.backgroundColor = '#ccc'; // Cor de fundo para indicar falta de sprite
-                }
+    <div class="form-scroll-container">
+            <form id="monster-form" class="grid grid-cols-1 gap-3">
+            <div>
+                <label for="monster-id" class="block text-xs font-medium text-gray-700">ID:</label>
+                <input type="number" id="monster-id" name="id" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" readonly>
+            </div>
+            <div>
+                <label for="monster-name" class="block text-xs font-medium text-gray-700">Nome:</label>
+                <input type="text" id="monster-name" name="name" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+            </div>
+                <div>
+                <label for="sprite-folder-name" class="block text-xs font-medium text-gray-700">Nome da Pasta da Sprite:</label>
+                <input type="text" id="sprite-folder-name" name="spriteFolderName" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+            </div>
+            <div>
+                <label for="monster-level" class="block text-xs font-medium text-gray-700">Nível:</label>
+                <input type="number" id="monster-level" name="level" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+            </div>
+            <div>
+                <label for="monster-hp" class="block text-xs font-medium text-gray-700">HP:</label>
+                <input type="number" id="monster-hp" name="hp" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+            </div>
+            <div>
+                <label for="monster-damage" class="block text-xs font-medium text-gray-700">Dano:</label>
+                <input type="number" id="monster-damage" name="damage" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+            </div>
+                <div>
+                <label for="monster-size" class="block text-xs font-medium text-gray-700">Tamanho (Size):</label>
+                <input type="number" id="monster-size" name="size" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+            </div>
+            <div>
+                <label for="monster-speed" class="block text-xs font-medium text-gray-700">Velocidade:</label>
+                <input type="number" id="monster-speed" name="speed" step="0.1" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+            </div>
+                <div>
+                <label for="monster-expReward" class="block text-xs font-medium text-gray-700">Recompensa EXP:</label>
+                <input type="number" id="monster-expReward" name="expReward" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+            </div>
+                <div>
+                <label for="monster-description" class="block text-xs font-medium text-gray-700">Descrição:</label>
+                <textarea id="monster-description" name="description" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" rows="2"></textarea>
+            </div>
 
 
-                const nameElement = document.createElement('span');
-                nameElement.classList.add('text-lg', 'font-medium', 'text-gray-800');
-                nameElement.textContent = monster.name;
-
-                monsterInfo.appendChild(listSpritePreview);
-                monsterInfo.appendChild(nameElement);
-
-                const actionsDiv = document.createElement('div');
-
-                const editButton = document.createElement('button');
-                editButton.classList.add('bg-yellow-500', 'hover:bg-yellow-600', 'text-white', 'font-bold', 'py-1', 'px-3', 'rounded-md', 'mr-2', 'transition', 'duration-300', 'ease-in-out');
-                editButton.textContent = 'Editar';
-                editButton.onclick = () => editMonster(monster.id);
-
-                const deleteButton = document.createElement('button');
-                deleteButton.classList.add('bg-red-500', 'hover:bg-red-600', 'text-white', 'font-bold', 'py-1', 'px-3', 'rounded-md', 'transition', 'duration-300', 'ease-in-out');
-                deleteButton.textContent = 'Deletar';
-                deleteButton.onclick = () => deleteMonster(monster.id);
-
-                actionsDiv.appendChild(editButton);
-                actionsDiv.appendChild(deleteButton);
-
-                listItem.appendChild(monsterInfo);
-                listItem.appendChild(actionsDiv);
-
-                monsterListUl.appendChild(listItem);
-            });
-        }
-
-        // Função para animar a sprite usando background-position
-        function animateSprite(element, frames, frameWidth, frameDuration) {
-             // Limpa qualquer animação anterior para este elemento
-            if (element.animationInterval) {
-                clearInterval(element.animationInterval);
-            }
-
-            let currentFrame = 0;
-            element.animationInterval = setInterval(() => {
-                const positionX = -currentFrame * frameWidth;
-                element.style.backgroundPositionX = `${positionX}px`;
-
-                currentFrame++;
-                if (currentFrame >= frames) {
-                    currentFrame = 0; // Volta para o início
-                }
-            }, frameDuration);
-        }
-
-
-        // Função para preencher o formulário com dados de um monstro
-        function fillForm(monster) {
-            editingMonsterId = monster.id;
-            formTitle.textContent = `Editar Monstro (ID: ${monster.id})`;
-            document.getElementById('monster-id').value = monster.id;
-            document.getElementById('monster-name').value = monster.name;
-            spriteFolderNameInput.value = monster.spriteFolderName || ''; // Preenche o nome da pasta
-            document.getElementById('monster-level').value = monster.level;
-            document.getElementById('monster-hp').value = monster.hp;
-            document.getElementById('monster-hpMax').value = monster.hpMax;
-            document.getElementById('monster-mana').value = monster.mana;
-            document.getElementById('monster-manaMax').value = monster.manaMax;
-            document.getElementById('monster-damage').value = monster.damage;
-            document.getElementById('monster-size').value = monster.size;
-            document.getElementById('monster-speed').value = monster.speed;
-            document.getElementById('monster-element').value = monster.element;
-            document.getElementById('monster-delayAttack').value = monster.delayAttack;
-            document.getElementById('monster-cooldownAttack').value = monster.cooldownAttack;
-            document.getElementById('monster-attackCountMax').value = monster.attackCountMax;
-            document.getElementById('monster-dyingTime').value = monster.dyingTime;
-            document.getElementById('monster-yCustomOffset').value = monster.yCustomOffset;
-            document.getElementById('monster-delayTakeHit').value = monster.delayTakeHit;
-            document.getElementById('monster-hitboxCustomOffsetY').value = monster.hitboxCustomOffsetY;
-            document.getElementById('monster-expReward').value = monster.expReward;
-
-            // Preenche a configuração de sprite
-            spriteConfigContainer.innerHTML = ''; // Limpa as configurações atuais
-            animationSelector.innerHTML = ''; // Limpa o seletor de animação
-
-            // Adiciona campos para as animações existentes
-            for (const animName in monster.spriteConfig) {
-                addAnimationFields(animName, monster.spriteConfig[animName]);
-                 // Adiciona a opção ao seletor de animação
-                const option = document.createElement('option');
-                option.value = animName;
-                option.textContent = animName.charAt(0).toUpperCase() + animName.slice(1);
-                animationSelector.appendChild(option);
-            }
-
-            // Atualiza a prévia da sprite com a animação 'idle' por padrão, se existir
-            if (monster.spriteConfig && monster.spriteConfig.idle) {
-                animationSelector.value = 'idle';
-                updateSpritePreview('idle');
-            } else {
-                 // Limpa a prévia se não houver animação idle
-                 spritePreviewDiv.style.backgroundImage = '';
-                 if(spritePreviewDiv.animationInterval) {
-                    clearInterval(spritePreviewDiv.animationInterval);
-                 }
-            }
-
-
-            monsterFormSection.classList.remove('hidden'); // Mostra o formulário
-        }
-
-         // Função para atualizar a prévia da sprite
-        function updateSpritePreview(animationName) {
-            const monsterId = document.getElementById('monster-id').value;
-            // Ao editar, pegamos o monstro do array; ao adicionar, construímos a config a partir dos campos do form
-            const currentMonster = editingMonsterId !== null ? monsters.find(m => m.id === parseInt(monsterId)) : getMonsterDataFromForm();
-
-            if (!currentMonster || !currentMonster.spriteConfig || !currentMonster.spriteConfig[animationName]) {
-                spritePreviewDiv.style.backgroundImage = '';
-                spritePreviewDiv.style.width = '90px'; // Tamanho padrão se não houver config
-                spritePreviewDiv.style.height = '90px';
-                spritePreviewDiv.style.backgroundSize = 'auto';
-                spritePreviewDiv.style.backgroundPositionX = '0px';
-                 // Limpa a animação se não houver sprite
-                 if(spritePreviewDiv.animationInterval) {
-                     clearInterval(spritePreviewDiv.animationInterval);
-                 }
-                return;
-            }
-
-            const animConfig = currentMonster.spriteConfig[animationName];
-
-            // Usa o tamanho do monstro se a animação não tiver tamanho definido
-            const previewWidth = animConfig.width || parseInt(monsterSizeInput.value) || 90;
-            const previewHeight = animConfig.height || parseInt(monsterSizeInput.value) || 90;
-
-
-            spritePreviewDiv.style.width = `${previewWidth}px`;
-            spritePreviewDiv.style.height = `${previewHeight}px`;
-            spritePreviewDiv.style.backgroundImage = `url(${animConfig.src})`;
-            spritePreviewDiv.style.backgroundSize = `${previewWidth * animConfig.frames}px ${previewHeight}px`;
-            spritePreviewDiv.style.backgroundPositionX = '0px'; // Começa no primeiro frame
-
-             // Inicia/atualiza a animação da prévia
-            animateSprite(spritePreviewDiv, animConfig.frames, previewWidth, 100); // 100ms por frame para a prévia do formulário
-        }
-
-
-        // Função para adicionar campos de uma animação ao formulário
-        function addAnimationFields(animName = '', animConfig = {}) {
-            const animDiv = document.createElement('div');
-            animDiv.classList.add('border', 'border-gray-200', 'p-4', 'rounded-md', 'space-y-2');
-            animDiv.dataset.animName = animName; // Armazena o nome da animação no elemento
-
-            const isStandard = Object.keys(standardAnimations).includes(animName);
-            const nameReadonly = isStandard && editingMonsterId !== null ? 'readonly' : ''; // Nome padrão readonly ao editar
-
-            animDiv.innerHTML = `
-                <div class="flex justify-between items-center">
-                    <h4 class="text-lg font-medium text-gray-700">${animName ? animName.charAt(0).toUpperCase() + animName.slice(1) : 'Nova Animação'}</h4>
-                    <button type="button" class="remove-animation-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded-md text-sm" ${isStandard && editingMonsterId !== null ? 'disabled' : ''}>Remover</button>
+            <div id="additional-fields" class="space-y-3 border-t pt-3 mt-3 border-gray-200">
+                    <h3 class="text-base font-semibold text-gray-700">Detalhes Adicionais</h3>
+                <div>
+                    <label for="monster-hpMax" class="block text-xs font-medium text-gray-700">HP Máx:</label>
+                    <input type="number" id="monster-hpMax" name="hpMax" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required readonly>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Nome da Animação:</label>
-                    <input type="text" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 animation-name-input" value="${animName}" ${nameReadonly} required>
+                    <label for="monster-mana" class="block text-xs font-medium text-gray-700">Mana:</label>
+                    <input type="number" id="monster-mana" name="mana" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">SRC da Imagem:</label>
-                    <input type="text" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 animation-src-input" value="${animConfig.src || ''}" required>
+                    <label for="monster-manaMax" class="block text-xs font-medium text-gray-700">Mana Máx:</label>
+                    <input type="number" id="monster-manaMax" name="manaMax" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Frame Inicial:</label>
-                        <input type="number" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 animation-frame-input" value="${animConfig.frame || 1}" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Total de Frames:</label>
-                        <input type="number" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 animation-frames-input" value="${animConfig.frames || 1}" required>
-                    </div>
+                <div>
+                    <label for="monster-element" class="block text-xs font-medium text-gray-700">Elemento:</label>
+                    <input type="text" id="monster-element" name="element" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
                 </div>
-                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Largura (px):</label>
-                        <input type="number" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 animation-width-input" value="${animConfig.width || ''}" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Altura (px):</label>
-                        <input type="number" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 animation-height-input" value="${animConfig.height || ''}" required>
-                    </div>
+                    <label for="monster-delayAttack" class="block text-xs font-medium text-gray-700">Delay Ataque:</label>
+                    <input type="number" id="monster-delayAttack" name="delayAttack" step="0.1" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
                 </div>
-            `;
+                    <div>
+                    <label for="monster-cooldownAttack" class="block text-xs font-medium text-gray-700">Cooldown Ataque:</label>
+                    <input type="number" id="monster-cooldownAttack" name="cooldownAttack" step="0.1" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+                </div>
+                    <div>
+                    <label for="monster-attackCountMax" class="block text-xs font-medium text-gray-700">Ataque Count Máx:</label>
+                    <input type="number" id="monster-attackCountMax" name="attackCountMax" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+                </div>
+                    <div>
+                    <label for="monster-dyingTime" class="block text-xs font-medium text-gray-700">Tempo Morrendo (ms):</label>
+                    <input type="number" id="monster-dyingTime" name="dyingTime" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+                </div>
+                    <div>
+                    <label for="monster-yCustomOffset" class="block text-xs font-medium text-gray-700">Offset Y Custom:</label>
+                    <input type="number" id="monster-yCustomOffset" name="yCustomOffset" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+                </div>
+                    <div>
+                    <label for="monster-delayTakeHit" class="block text-xs font-medium text-gray-700">Delay Take Hit:</label>
+                    <input type="number" id="monster-delayTakeHit" name="delayTakeHit" step="0.1" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+                </div>
+                    <div>
+                    <label for="monster-hitboxCustomOffsetY" class="block text-xs font-medium text-gray-700">Hitbox Offset Y Custom:</label>
+                    <input type="number" id="monster-hitboxCustomOffsetY" name="hitboxCustomOffsetY" class="mt-1 block w-full p-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-xs" required>
+                </div>
 
-            spriteConfigContainer.appendChild(animDiv);
-
-            // Adiciona listener para remover animação
-            animDiv.querySelector('.remove-animation-btn').onclick = () => {
-                const removedAnimName = animDiv.dataset.animName;
-                 // Remove a opção do seletor de animação
-                const optionToRemove = animationSelector.querySelector(`option[value="${removedAnimName}"]`);
-                if(optionToRemove) {
-                    optionToRemove.remove();
-                }
-                animDiv.remove();
-                // Atualiza a prévia se a animação removida era a selecionada
-                if (animationSelector.value === removedAnimName) {
-                    // Tenta selecionar 'idle' ou a primeira animação disponível
-                    if (animationSelector.options.length > 0) {
-                        animationSelector.value = animationSelector.options[0].value;
-                        updateSpritePreview(animationSelector.value);
-                    } else {
-                         // Se não houver mais animações, limpa a prévia
-                        spritePreviewDiv.style.backgroundImage = '';
-                         if(spritePreviewDiv.animationInterval) {
-                            clearInterval(spritePreviewDiv.animationInterval);
-                         }
-                    }
-                }
-            };
-
-             // Adiciona listeners para atualizar a prévia em tempo real ao mudar os campos da animação
-            const inputs = animDiv.querySelectorAll('input');
-            inputs.forEach(input => {
-                input.addEventListener('input', () => {
-                    // Só atualiza a prévia se esta animação estiver selecionada
-                    if (animationSelector.value === animDiv.dataset.animName) {
-                         // Cria um objeto temporário com os valores atuais para a prévia
-                        const tempAnimConfig = {
-                            src: animDiv.querySelector('.animation-src-input').value,
-                            frame: parseInt(animDiv.querySelector('.animation-frame-input').value) || 1,
-                            frames: parseInt(animDiv.querySelector('.animation-frames-input').value) || 1,
-                            width: parseInt(animDiv.querySelector('.animation-width-input').value) || 0,
-                            height: parseInt(animDiv.querySelector('.animation-height-input').value) || 0
-                        };
-                         // Usa o tamanho do monstro se a animação não tiver tamanho definido
-                        const previewWidth = tempAnimConfig.width || parseInt(monsterSizeInput.value) || 90;
-                        const previewHeight = tempAnimConfig.height || parseInt(monsterSizeInput.value) || 90;
-
-
-                        spritePreviewDiv.style.width = `${previewWidth}px`;
-                        spritePreviewDiv.style.height = `${previewHeight}px`;
-                        spritePreviewDiv.style.backgroundImage = `url(${tempAnimConfig.src})`;
-                        spritePreviewDiv.style.backgroundSize = `${previewWidth * tempAnimConfig.frames}px ${previewHeight}px`;
-                        spritePreviewDiv.style.backgroundPositionX = '0px'; // Começa no primeiro frame
-
-                        // Reinicia a animação da prévia com os novos valores
-                        if(spritePreviewDiv.animationInterval) {
-                            clearInterval(spritePreviewDiv.animationInterval);
-                        }
-                         if (tempAnimConfig.frames > 1 && previewWidth > 0) {
-                            animateSprite(spritePreviewDiv, tempAnimConfig.frames, previewWidth, 100);
-                         }
-                    }
-                });
-            });
-
-             // Adiciona listener para atualizar o nome da animação no título e no seletor
-            const animNameInput = animDiv.querySelector('.animation-name-input');
-            animNameInput.addEventListener('input', () => {
-                 const newAnimName = animNameInput.value.trim();
-                 const oldAnimName = animDiv.dataset.animName; // Pega o nome antigo do dataset
-
-                 if (newAnimName && newAnimName !== oldAnimName) {
-                     // Atualiza o título da seção da animação
-                    animDiv.querySelector('h4').textContent = newAnimName.charAt(0).toUpperCase() + newAnimName.slice(1);
-
-                    // Atualiza a opção no seletor de animação
-                    let option = animationSelector.querySelector(`option[value="${oldAnimName}"]`);
-                    if (!option) { // Se for uma nova animação, cria a opção
-                        option = document.createElement('option');
-                        animationSelector.appendChild(option);
-                    }
-                    option.value = newAnimName;
-                    option.textContent = newAnimName.charAt(0).toUpperCase() + newAnimName.slice(1);
-                    animDiv.dataset.animName = newAnimName; // Atualiza o nome da animação no dataset
-
-                    // Se esta animação estava selecionada na prévia, atualiza o seletor
-                    if (animationSelector.value === oldAnimName) {
-                        animationSelector.value = newAnimName;
-                    }
-                 } else if (!newAnimName && oldAnimName) {
-                     // Se o nome for removido, remove a opção do seletor
-                    const optionToRemove = animationSelector.querySelector(`option[value="${oldAnimName}"]`);
-                    if(optionToRemove) {
-                        optionToRemove.remove();
-                    }
-                    animDiv.dataset.animName = ''; // Limpa o nome no dataset
-                 }
-            });
-
-        }
-
-        // Função para preencher automaticamente as configurações de sprite padrão
-        function autoFillStandardSpriteConfig() {
-            const folderName = spriteFolderNameInput.value.trim();
-            const size = parseInt(monsterSizeInput.value);
-
-            if (!folderName || isNaN(size) || size <= 0) {
-                // Não auto-preenche se o nome da pasta ou tamanho não forem válidos
-                return;
-            }
-
-             // Remove campos de animação existentes para evitar duplicação, exceto se estiver editando
-            if (editingMonsterId === null) { // Apenas limpa se estiver adicionando um novo monstro
-                 spriteConfigContainer.innerHTML = '';
-                 animationSelector.innerHTML = '';
-            } else {
-                 // Ao editar, remove apenas as animações padrão existentes para substituí-las
-                 Object.keys(standardAnimations).forEach(animName => {
-                     const existingAnimDiv = spriteConfigContainer.querySelector(`div[data-anim-name="${animName}"]`);
-                     if (existingAnimDiv) {
-                         existingAnimDiv.remove();
-                          const optionToRemove = animationSelector.querySelector(`option[value="${animName}"]`);
-                         if(optionToRemove) {
-                             optionToRemove.remove();
-                         }
-                     }
-                 });
-            }
-
-
-            // Adiciona e preenche os campos para as animações padrão
-            for (const animName in standardAnimations) {
-                const fileName = standardAnimations[animName];
-                const src = `/static/img/sprites/${folderName}/${fileName}`;
-                const frames = standardAnimationFrames[animName] || 1; // Usa frames padrão ou 1
-                const frame = 1; // Frame inicial padrão é 1
-                const width = size;
-                const height = size;
-
-                const animConfig = { src, frame, frames, width, height };
-                addAnimationFields(animName, animConfig);
-
-                 // Adiciona a opção ao seletor de animação
-                const option = document.createElement('option');
-                option.value = animName;
-                option.textContent = animName.charAt(0).toUpperCase() + animName.slice(1);
-                animationSelector.appendChild(option);
-            }
-
-             // Seleciona 'idle' por padrão e atualiza a prévia
-            if (animationSelector.options.length > 0) {
-                 animationSelector.value = 'idle';
-                 updateSpritePreview('idle');
-            } else {
-                 spritePreviewDiv.style.backgroundImage = '';
-                  if(spritePreviewDiv.animationInterval) {
-                    clearInterval(spritePreviewDiv.animationInterval);
-                 }
-            }
-
-        }
-
-
-        // Função para limpar o formulário
-        function clearForm() {
-            editingMonsterId = null;
-            formTitle.textContent = 'Adicionar Novo Monstro';
-            monsterForm.reset();
-            document.getElementById('monster-id').value = ''; // Limpa o ID
-            spriteConfigContainer.innerHTML = ''; // Limpa as configurações de sprite
-            animationSelector.innerHTML = ''; // Limpa o seletor de animação
-            spritePreviewDiv.style.backgroundImage = ''; // Limpa a prévia
-             if(spritePreviewDiv.animationInterval) {
-                clearInterval(spritePreviewDiv.animationInterval); // Para a animação da prévia
-            }
-            monsterFormSection.classList.add('hidden'); // Esconde o formulário
-        }
-
-         // Função para coletar dados do monstro a partir do formulário (útil para prévia ao adicionar)
-        function getMonsterDataFromForm() {
-             const monsterData = {
-                 spriteConfig: {}
-             };
-
-             // Coleta dados dos campos principais (apenas os que afetam a prévia)
-             monsterData.size = parseInt(monsterSizeInput.value) || 0;
-             monsterData.spriteFolderName = spriteFolderNameInput.value.trim();
-
-
-             // Coleta os dados da configuração de sprite
-            const animDivs = spriteConfigContainer.querySelectorAll(':scope > div');
-
-            animDivs.forEach(animDiv => {
-                 const animNameInput = animDiv.querySelector('.animation-name-input');
-                 const animSrcInput = animDiv.querySelector('.animation-src-input');
-                 const animFrameInput = animDiv.querySelector('.animation-frame-input');
-                 const animFramesInput = animDiv.querySelector('.animation-frames-input');
-                 const animWidthInput = animDiv.querySelector('.animation-width-input');
-                 const animHeightInput = animDiv.querySelector('.animation-height-input');
-
-                 const animName = animNameInput.value.trim();
-
-                 if (animName && animSrcInput.value) {
-                     monsterData.spriteConfig[animName] = {
-                         src: animSrcInput.value,
-                         frame: parseInt(animFrameInput.value) || 1,
-                         frames: parseInt(animFramesInput.value) || 1,
-                         width: parseInt(animWidthInput.value) || 0,
-                         height: parseInt(animHeightInput.value) || 0
-                     };
-                 }
-            });
-
-            return monsterData;
-        }
-
-
-        // Event Listeners
-
-        // Botão Adicionar Novo Monstro
-        addMonsterBtn.addEventListener('click', () => {
-            clearForm(); // Limpa o formulário antes de adicionar um novo
-             // Não adiciona animações padrão aqui, elas serão auto-preenchidas ao digitar a pasta/tamanho
-            monsterFormSection.classList.remove('hidden'); // Mostra o formulário
-        });
-
-         // Botão Cancelar Edição
-        cancelEditBtn.addEventListener('click', () => {
-            clearForm();
-        });
-
-
-        // Botão Adicionar Animação (dentro do formulário)
-        addAnimationBtn.addEventListener('click', () => {
-            addAnimationFields(); // Adiciona um novo conjunto de campos de animação vazios
-        });
-
-        // Listener para o seletor de animação na prévia
-        animationSelector.addEventListener('change', (event) => {
-            updateSpritePreview(event.target.value);
-        });
-
-        // Listeners para auto-preencher a configuração de sprite
-        spriteFolderNameInput.addEventListener('input', autoFillStandardSpriteConfig);
-        monsterSizeInput.addEventListener('input', autoFillStandardSpriteConfig);
-
-
-        // Submissão do Formulário
-        monsterForm.addEventListener('submit', (event) => {
-            event.preventDefault(); // Previne o recarregamento da página
-
-            const formData = new FormData(monsterForm);
-            const monsterData = {};
-
-            // Coleta os dados dos campos principais
-            for (const [key, value] of formData.entries()) {
-                 // Ignora os campos de animação individuais aqui, pois eles serão coletados da spriteConfigContainer
-                 if (!key.startsWith('animation')) {
-                     // Converte para número onde apropriado
-                    monsterData[key] = (['id', 'level', 'hp', 'hpMax', 'mana', 'manaMax', 'damage', 'size', 'speed', 'attackCountMax', 'dyingTime', 'yCustomOffset', 'hitboxCustomOffsetY', 'expReward'].includes(key)) ? parseFloat(value) : value;
-                 }
-            }
-
-             // Adiciona o nome da pasta da sprite
-            monsterData.spriteFolderName = spriteFolderNameInput.value.trim();
-
-
-            // Coleta os dados da configuração de sprite a partir dos campos gerados dinamicamente
-            monsterData.spriteConfig = {};
-            const animDivs = spriteConfigContainer.querySelectorAll(':scope > div'); // Seleciona apenas os divs filhos diretos
-
-            animDivs.forEach(animDiv => {
-                 const animNameInput = animDiv.querySelector('.animation-name-input');
-                 const animSrcInput = animDiv.querySelector('.animation-src-input');
-                 const animFrameInput = animDiv.querySelector('.animation-frame-input');
-                 const animFramesInput = animDiv.querySelector('.animation-frames-input');
-                 const animWidthInput = animDiv.querySelector('.animation-width-input');
-                 const animHeightInput = animDiv.querySelector('.animation-height-input');
-
-                 const animName = animNameInput.value.trim();
-
-                 if (animName && animSrcInput.value) { // Garante que o nome e o src não estão vazios
-                     monsterData.spriteConfig[animName] = {
-                         src: animSrcInput.value,
-                         frame: parseInt(animFrameInput.value) || 1,
-                         frames: parseInt(animFramesInput.value) || 1,
-                         width: parseInt(animWidthInput.value) || 0,
-                         height: parseInt(animHeightInput.value) || 0
-                     };
-                 }
-            });
-
-
-            if (editingMonsterId !== null) {
-                // Atualiza um monstro existente
-                const index = monsters.findIndex(m => m.id === editingMonsterId);
-                if (index !== -1) {
-                    // Mantém o ID original e atualiza os outros campos
-                    monsters[index] = { ...monsters[index], ...monsterData, id: editingMonsterId };
-                }
-            } else {
-                // Adiciona um novo monstro
-                // Gera um ID automático: maior ID existente + 1
-                const newId = monsters.length > 0 ? Math.max(...monsters.map(m => m.id)) + 1 : 1;
-                monsterData.id = newId;
-                monsters.push(monsterData);
-            }
-
-            saveMonsters(); // Salva no localStorage
-            renderMonsterList(); // Atualiza a lista
-            clearForm(); // Limpa e esconde o formulário
-        });
-
-        // Função para editar um monstro
-        function editMonster(id) {
-            const monsterToEdit = monsters.find(monster => monster.id === id);
-            if (monsterToEdit) {
-                fillForm(monsterToEdit);
-            }
-        }
-
-        // Função para deletar um monstro
-        function deleteMonster(id) {
-            if (confirm('Tem certeza que deseja deletar este monstro?')) {
-                monsters = monsters.filter(monster => monster.id !== id);
-                saveMonsters(); // Salva no localStorage após deletar
-                renderMonsterList(); // Atualiza a lista
-                // Se o monstro deletado era o que estava sendo editado, limpa o formulário
-                if (editingMonsterId === id) {
-                    clearForm();
-                }
-            }
-        }
-
-        // Botão Exportar Monstros
-        exportMonstersBtn.addEventListener('click', () => {
-            const jsonString = JSON.stringify(monsters, null, 2); // Formata o JSON com indentação
-            const blob = new Blob([jsonString], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'monsters.json';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url); // Limpa o URL do objeto
-        });
-
-        // Inicializa: carrega do localStorage e renderiza a lista
-        loadMonsters();
-        renderMonsterList();
-
-    </script>
-
-</body>
-</html>
+                <div class="col-span-full">
+                    <h4 class="text-base font-semibold mt-2 mb-1 text-gray-700">Configuração de Sprite (spriteConfig)</h4>
+                    <div id="sprite-config-container" class="space-y-3">
+                        </div>
+                    <button type="button" id="add-animation-btn" class="mt-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-1 px-2 rounded-md text-xs transition duration-300 ease-in-out">
+                        Adicionar Animação Manualmente
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</div>

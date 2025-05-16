@@ -121,8 +121,8 @@ class Player extends Entity {
         document.querySelector('.user-panel .stats-bar-fill.exp').innerText = `${this.exp}/${this.expMax}`;
 
         // player position
-        this.element.style.left = `${this.x}px`;
-        this.element.style.bottom = `${this.y}px`;
+        this.$element.style.left = `${this.x}px`;
+        this.$element.style.bottom = `${this.y}px`;
 
     }
 
@@ -156,11 +156,11 @@ class Player extends Entity {
 
             if (key === 'a') {
                 this.keyboard.left = true;
-                this.element.style.transform = `scale(-${ENTITY_SCALE}, ${ENTITY_SCALE})`;
+                this.$element.style.transform = `scale(-${ENTITY_SCALE}, ${ENTITY_SCALE})`;
             }
             if (key === 'd') {
                 this.keyboard.right = true;
-                this.element.style.transform = `scale(${ENTITY_SCALE}, ${ENTITY_SCALE})`;
+                this.$element.style.transform = `scale(${ENTITY_SCALE}, ${ENTITY_SCALE})`;
             }
             if (key === ' ') {
                 this.keyboard.jump = true;

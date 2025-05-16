@@ -15,6 +15,7 @@ class Enemy extends Entity{
     update() {
         super.update(this.hitboxCustomOffsetY)
         this.spriteManager.update();
+        this.y = FLOOR - (this.yCustomOffset || 0);
         if (this.isDying || this.isDead) return;
         this.movement();
         this.draw();
@@ -30,14 +31,14 @@ class Enemy extends Entity{
 
         if (this.hitboxX >= (window.player.hitboxX + window.player.hitboxWidth)) {
             this.x -= this.speed;
-            this.element.style.transform = `scale(-${ENTITY_SCALE}, ${ENTITY_SCALE})`;
+            this.$element.style.transform = `scale(-${ENTITY_SCALE}, ${ENTITY_SCALE})`;
             document.querySelector('.enemy-panel').style.transform = `scale(-1, 1)`;
             this.directionEnemy = 'left';
             this.spriteManager.setState('run');
         }
         else if ((this.hitboxX + this.hitboxWidth) <= window.player.hitboxX) {
             this.x += this.speed;
-            this.element.style.transform = `scale(${ENTITY_SCALE}, ${ENTITY_SCALE})`;
+            this.$element.style.transform = `scale(${ENTITY_SCALE}, ${ENTITY_SCALE})`;
             document.querySelector('.enemy-panel').style.transform = `scale(1, 1)`;
             this.directionEnemy = 'right';
             this.spriteManager.setState('run');
@@ -62,8 +63,8 @@ class Enemy extends Entity{
         this.drawBars();
 
         // enemy position
-        this.element.style.left = `${this.x}px`;
-        this.element.style.bottom = `${this.y}px`;
+        this.$element.style.left = `${this.x}px`;
+        this.$element.style.bottom = `${this.y}px`;
     }
 
     createBars() {
@@ -75,13 +76,13 @@ class Enemy extends Entity{
         hpbar.appendChild(hpbarFill);
         hpbar.style.top = `${this.hitboxXOffset - 15}px`;
         hpbar.style.left = `${this.hitboxYOffset }px`;
-        this.element.appendChild(hpbar);
+        this.$element.appendChild(hpbar);
 
     }
 
     drawBars() {
-        this.element.querySelector('.enemy-panel .stats-bar-fill.hp').style.width = `${this.hp / this.hpMax * 100}%`;
-        this.element.querySelector('.enemy-panel .stats-bar-fill.hp').innerText = `${this.hp}/${this.hpMax}`;
+        this.$element.querySelector('.enemy-panel .stats-bar-fill.hp').style.width = `${this.hp / this.hpMax * 100}%`;
+        this.$element.querySelector('.enemy-panel .stats-bar-fill.hp').innerText = `${this.hp}/${this.hpMax}`;
     }
 
     takeHit(damage) {

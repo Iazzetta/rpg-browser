@@ -1,0 +1,30 @@
+from pydantic import BaseModel
+
+class EntityDto(BaseModel):
+    id: int
+    name: str
+    spriteFolderName: str
+    element: str
+    spriteConfig: dict
+    level: int
+    hp: int
+    hpMax: int
+    mana: int
+    manaMax: int
+    damage: int
+    yCustomOffset: int
+    size: int
+    speed: int
+    cooldownAttack: int
+    attackCountMax: int
+    delayAttack: int
+    dyingTime: int
+    delayTakeHit: int
+    spriteManager: dict
+    attackCount: int
+    hitboxWidth: int
+    hitboxHeight: int
+    hitboxXOffset: int
+    hitboxYOffset: int
+    hitboxX: int
+    hitboxY: int

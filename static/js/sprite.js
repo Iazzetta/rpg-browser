@@ -1,6 +1,6 @@
 class SpriteManager {
     constructor(element, config) {
-        this.element = element;
+        this.$element = element;
         this.config = config;
         this.state = 'idle';
         this.slowedBy = 0;
@@ -8,8 +8,8 @@ class SpriteManager {
         this.stopped = false;
         this.lastState = 'idle';
 
-        this.element.style.width = `${this.config[this.state].width}px`;
-        this.element.style.height = `${this.config[this.state].height}px`;
+        this.$element.style.width = `${this.config[this.state].width}px`;
+        this.$element.style.height = `${this.config[this.state].height}px`;
     }
 
     update() {
@@ -27,8 +27,8 @@ class SpriteManager {
 
     draw() {
         if (this.stopped) {
-            this.element.style.backgroundImage = 'none';
-            this.element.style.backgroundPosition = '0px 0px';
+            this.$element.style.backgroundImage = 'none';
+            this.$element.style.backgroundPosition = '0px 0px';
             return;
         }
         const selectedFrame = this.config[this.state];
@@ -44,7 +44,7 @@ class SpriteManager {
             this.slowedBy++;
         }
         const frameX = selectedFrame.frame * selectedFrame.width;
-        this.element.style.backgroundImage = `url(${selectedFrame.src})`
-        this.element.style.backgroundPosition = `${-frameX}px ${selectedFrame.height}px`
+        this.$element.style.backgroundImage = `url(${selectedFrame.src})`
+        this.$element.style.backgroundPosition = `${-frameX}px ${selectedFrame.height}px`
     }
 }
