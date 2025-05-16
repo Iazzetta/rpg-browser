@@ -37,6 +37,12 @@ async def modal_configuration(request: Request):
         request=request, name="modal/modal_configuration.html", context={}
     )
 
+@app.get("/modal/player-stats", response_class=HTMLResponse)
+async def modal_stats(request: Request):
+    return templates.TemplateResponse(
+        request=request, name="modal/modal_stats.html", context={}
+    )
+
 @app.get("/monsters", response_class=JSONResponse)
 async def get_monsters(request: Request):
     data = open('static/data/monsters.json', 'r').read()

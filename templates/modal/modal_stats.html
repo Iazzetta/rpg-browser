@@ -1,0 +1,52 @@
+{% extends "modal/base_modal.html" %}
+
+{% block modal_title %}Stats{% endblock %}
+
+{% block modal_content %}
+<div>
+    <div>Pontos disponíveis: <span id="available-points">0</span></div>
+    <div class="">
+        <div class="flex justify-between">
+            <p class="mb-2 font-bold">Força</p>
+            <div class="update-stats flex justify-between w-[50px] items-center">
+                <button class="btn-update-stats">+</button>
+                <div class="update-stats-value" id="strength-value">0</div>
+                <button class="btn-update-stats">-</button>
+            </div>
+        </div>
+        <div class="">
+            <p>Dano: <span id="stats-damage">0</span></p>
+        </div>
+        <div class="flex justify-between">
+            <p class="mb-2 font-bold">Constituição</p>
+            <div class="update-stats flex justify-between w-[50px] items-center">
+                <button class="btn-update-stats">+</button>
+                <div class="update-stats-value" id="constitution-value">0</div>
+                <button class="btn-update-stats">-</button>
+            </div>
+        </div>
+        <div class="">    
+            <p>HP: <span id="stats-hp">0</span></p>
+        </div>
+        <div class="flex justify-between">
+            <p class="mb-2 font-bold">Destreza</p>
+            <div class="update-stats flex justify-between w-[50px] items-center">
+                <button class="btn-update-stats">+</button>
+                <div class="update-stats-value" id="dexterity-value">0</div>
+                <button class="btn-update-stats">-</button>
+            </div>
+        </div>
+        <div class="">
+            <p>Velocidade de ataque: <span id="stats-attack-speed">0</span></p>
+        </div>
+        <div class="">
+            <p>Chance de crítico: <span id="stats-critical-change">0</span></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block modal_actions %}
+    <button class="modal__save btn-sm btn-green-500" id="btn-save-stats">Salvar</button>
+    <button class="modal__close btn-sm btn-red-500">Cancelar</button>
+{% endblock %}

@@ -13,6 +13,12 @@ class Entity {
         this.y = FLOOR - (this.yCustomOffset || 0);
         this.size = data.size;
         this.speed = data.speed;
+        this.stats_points = data.stats_points;
+        if (data.stats) {
+            this.stats = new Stats(data.stats);
+            this.hp = this.stats.calcTotalHealth(data.hp);
+            this.hpMax = this.stats.calcTotalHealth(data.hpMax);
+        }
         this.$element = document.createElement('div')
         this.$element.classList.add('entity', data.element)
         document.querySelector('.game-container').appendChild(this.$element)
@@ -72,7 +78,7 @@ class Entity {
 
         setTimeout(() => {
             this.spriteManager.setState('idle')
-        }, this.delayAttack * 1000)
+        }, this.stats ? this.stats.calcTotalAttackSpeed(this.delayAttack) * 1000 : this.delayAttack * 1000)
 
         // delay attack
         clearTimeout(this.attackTimeout);
@@ -85,7 +91,7 @@ class Entity {
             } else {
                 this.attackCount++;
             }
-        }, this.cooldownAttack * 1000);
+        }, this.stats ? this.stats.calcTotalAttackSpeed(this.cooldownAttack) * 1000 : this.cooldownAttack * 1000);
     }
 
     die(callback = false) {

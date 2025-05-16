@@ -38,6 +38,7 @@
          {% include 'ui/menu.html' %}
     </div>
     <script src="https://code.createjs.com/1.0.0/soundjs.min.js"></script>
+    <script src="{{ url_for('static', path='js/stats.js') }}"></script>
     <script src="{{ url_for('static', path='js/utils.js') }}"></script>
     <script src="{{ url_for('static', path='js/modal.js') }}"></script>
     <script src="{{ url_for('static', path='js/item.js') }}"></script>
@@ -49,7 +50,7 @@
     <script src="{{ url_for('static', path='js/sprite.js') }}"></script>
     <script src="{{ url_for('static', path='js/monsters.js') }}"></script>
     <script src="{{ url_for('static', path='js/monster_builder.js') }}"></script>
-
+    
     <script src="{{ url_for('static', path='js/entity.js') }}"></script>
     <script src="{{ url_for('static', path='js/player.js') }}"></script>
     <script src="{{ url_for('static', path='js/enemy.js') }}"></script>

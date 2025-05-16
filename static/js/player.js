@@ -31,7 +31,13 @@ class Player extends Entity {
                 createjs.Sound.play(`attack_${this.attackCount}`);
                 for (const enemy of window.enemies) {
                     if (calculateDistance(this.hitboxX, this.hitboxY, enemy.hitboxX, enemy.hitboxY) <=  enemy.hitboxWidth) {
-                        enemy.takeHit(this.damage);
+                        let damage = this.stats.calcTotalDamage(this.damage)
+                        const criticalChange = this.stats.calcTotalCriticalChange()
+                        const criticalRandom = randInt(1, 100);
+                        if (criticalChange >= criticalRandom) {
+                            damage = damage * criticalChange
+                        }
+                        enemy.takeHit(damage);
                     }
                 }
             });

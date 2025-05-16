@@ -69,10 +69,40 @@ const updateVolume = (slider) => {
 }
 
 
+window.loadStats = () => {
+
+  const availablePoints = document.getElementById('available-points')
+  const strengthValue = document.getElementById('strength-value')
+  const constitutionValue = document.getElementById('constitution-value')
+  const dexterityValue = document.getElementById('dexterity-value')
+
+  const statsDamage = document.getElementById('stats-damage')
+  const statsHp = document.getElementById('stats-hp')
+  const statsAttackSpeed = document.getElementById('stats-attack-speed')
+  const statsCriticalChange = document.getElementById('stats-critical-change')
+
+  availablePoints.innerText = window.player.stats_points
+  strengthValue.innerText = window.player.stats.strength
+  constitutionValue.innerText = window.player.stats.constitution
+  dexterityValue.innerText = window.player.stats.dexterity
+
+  statsDamage.innerText = window.player.stats.calcTotalDamage(window.player.damage)
+  statsHp.innerText = window.player.hpMax
+  statsAttackSpeed.innerText = window.player.stats.calcTotalAttackSpeed(window.player.delayAttack)
+  statsCriticalChange.innerText = window.player.stats.calcTotalCriticalChange()
+}
+
+
 // events
 document.querySelectorAll('.menu-panel .slot').forEach((slot) => {
   slot.addEventListener('click', async (e) => {
     const key = slot.getAttribute('data-key');
-    await Modal.open(key);
+    const callback = slot.getAttribute('data-callback');
+    await Modal.open(key, () => {
+      if (callback) {
+        window[callback]();
+      }
+    });
+    
   })
 })

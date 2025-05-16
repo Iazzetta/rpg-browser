@@ -16,6 +16,12 @@ window.player = new Player({
     dyingTime: 400,
     exp: 0, 
     expMax: 100,
+    stats_points: 2,
+    stats: {
+        strength: 1,
+        constitution: 1,
+        dexterity: 1
+    },
     spriteConfig: {
         idle: {
             src: '/static/img/sprites/warrior/idle.png',

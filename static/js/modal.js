@@ -1,7 +1,7 @@
 class Modal {
     constructor() {}
 
-    static async open(modal_type) {
+    static async open(modal_type, callback = false) {
         Modal.closeModal();
         const r = await fetch(`/modal/${modal_type}`);
         const response = await r.text();
@@ -10,6 +10,10 @@ class Modal {
         document.querySelector('.modal__close').addEventListener('click', () => {
             Modal.closeModal();
         })
+
+        if (callback) {
+            callback();
+        }
     }
 
     static closeModal() {
