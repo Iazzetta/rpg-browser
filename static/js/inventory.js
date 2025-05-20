@@ -7,13 +7,7 @@ class Inventory {
     }
 
     update() {
-        this.drawIventory();
         this.drawQuickItem();
-    }
-
-    drawIventory() {
-        if (!this.showInventory) return;
-        // draw
     }
 
     drawQuickItem() {
@@ -35,6 +29,41 @@ class Inventory {
         }
     }
 
+    loadInventory() {
+        const $inventory = document.querySelector('.inventory-items')
+        if ($inventory) {
+            let html_slots = ''
+            for (let i = 0; i < this.maxItems; i++) {
+                if (this.items[i]) {
+                    html_slots += `
+                        <div class="slot filled" data-item-id="${this.items[i].id}">
+                            ${this.items[i].icon}
+                        </div>
+                    `
+                } else {
+                    html_slots += `
+                        <div class="slot"></div>
+                    `
+                }
+            }
+
+            $inventory.innerHTML = `
+                <div class="text-right text-bold mb-2">Espaço: ${this.items.length}/${this.maxItems}</div>
+                <div class="grid grid-cols-4 gap-4">
+                    ${html_slots}
+                </div>
+            `
+
+            document.querySelectorAll('.inventory-items .slot.filled').forEach((el) => {
+                el.addEventListener('click', (ev) => {
+                    const item_id = el.getAttribute('data-item-id');
+                    const item = this.getItemById(item_id)
+                    item.useItem(this.entity_owner);
+                })
+            })
+        }
+    }
+
     addItem(item) {
         this.items.push(item);
     }
@@ -49,5 +78,9 @@ class Inventory {
 
     getItemByPosition(position) {
         return this.items.find(item => item.quickItemPosition === position);
+    }
+
+    getItemById(item_id) {
+        return this.items.find(item => item.id === item_id);
     }
 }

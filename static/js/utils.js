@@ -108,6 +108,10 @@ window.loadStats = () => {
   
 }
 
+window.loadInventory = () => {
+  window.player.inventory.loadInventory()
+}
+
 
 // events
 document.querySelectorAll('.menu-panel .slot').forEach((slot) => {

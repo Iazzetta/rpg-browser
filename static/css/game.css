@@ -64,9 +64,14 @@
     overflow-y: scroll;
     border-radius: 10px;
     background-color: white;
+    scrollbar-width: none;
 }
 .admin-toolbar.minimized {
     max-height: 50px;
+    max-width: 80px;
+}
+.admin-toolbar.minimized .title-admin-toolbar {
+    display: none;
 }
 .admin-toolbar #hide-toolbar-btn {
     margin: auto 0;

@@ -1,8 +1,9 @@
 <div class="modal">
     <div class="modal__overlay"></div>
     <div class="modal__content">
-        <div class="modal__header">
+        <div class="modal__header flex justify-between">
             <h2 class="modal__title">{% block modal_title %}{% endblock %}</h2>
+            <button class="modal__close bg-gray-400 px-2 py-1 btn-gray-500 rounded">X</button>
         </div>
         <div class="modal__body">
             {% block modal_content %}
@@ -10,7 +11,6 @@
         </div>
         <div class="modal__footer mt-2">
             {% block modal_actions %}{% endblock %}
-            <button class="modal__close bg-gray-400 px-2 py-1 btn-gray-500 rounded">Fechar</button>
         </div>
     </div>  
 </div>

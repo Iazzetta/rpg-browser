@@ -1,5 +1,6 @@
 class Item {
     constructor(data) {
+        this.id = crypto.randomUUID();        
         this.name = data.name;
         this.description = data.description;
         this.icon = data.icon;
