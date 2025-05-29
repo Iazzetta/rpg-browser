@@ -19,7 +19,7 @@ poetry install
 poetry shell
 ```
 
-Se aparecer algum erro de "The command 'shell' does not exist.", é porque o comando shell virou um plugin.
+Se aparecer algum erro de "The command 'shell' does not exist.", é porque o [comando shell virou um plugin](https://github.com/python-poetry/poetry-plugin-shell).
 Rode o comando no seu terminal: `poetry self add poetry-plugin-shell` para conseguir usa-lo.
 
 ### rodar o projeto
