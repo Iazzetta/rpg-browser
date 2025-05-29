@@ -26,3 +26,9 @@ Rode o comando no seu terminal: `poetry self add poetry-plugin-shell` para conse
 ```
 fastapi dev app.py
 ```
+
+## Acompanhe os videos
+
+Para acompanhar os videos onde crio esse jogo, acesse a playlist no meu canal:
+
+[RPG 2D do ZERO](https://www.youtube.com/playlist?list=PL39zbyHjgjrYgWU_JhRssJr9oafGIIO9M)
